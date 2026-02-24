@@ -1,0 +1,374 @@
+<!--
+    browse.html — Browse Skills Page
+
+    Displays all available skills in a searchable, filterable grid.
+    Each skill card shows the name, category, teacher count, and a dynamic
+    icon (chosen via template logic).
+    Clicking a card navigates to match.html to find teachers for that skill.
+
+    Template variables from views.py/browse_view():
+      - skills: Queryset of Skill objects annotated with teacher_count
+      - categories: List of unique category names for the filter dropdown
+      - search_query: Current search term (if any)
+      - selected_category: Currently selected category filter
+      - total_skills: Total number of skills in the database
+
+    Sections:
+      1. Header — page title with total skills count
+      2. Search & Filter — search bar + category dropdown
+      3. Active Filters — shows removable filter badges
+      4. Skills Grid — responsive card grid with hover effects
+      5. CTA — encourages users to add their own skills
+-->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Browse Skills - Skill Exchange{% endblock %}
+
+{% block content %}
+<!-- ✨ CLEAN HEADER -->
+<div class="position-relative overflow-hidden pt-5 pb-5" style="background: var(--primary-color);">
+    <div class="container text-center position-relative z-2">
+        <h1 class="text-white mb-3 fw-bolder" style="font-size: 3.5rem; letter-spacing: -1px;" data-aos="fade-down">
+            <i class="fas fa-compass me-3 spin-on-hover"></i>Discover Amazing Skills
+        </h1>
+        <p class="text-white mb-0 fs-4 opacity-75" data-aos="fade-up" data-aos-delay="100">
+            Explore <span class="badge bg-white text-primary px-3 py-2 ms-2 fs-5 rounded-pill shadow-sm">{{ total_skills }}</span> skills taught by verified students
+        </p>
+    </div>
+
+    <!-- Decorative faint circles -->
+    <div class="position-absolute rounded-circle"
+        style="width: 400px; height: 400px; background: rgba(255,255,255,0.05); top: -100px; left: -100px;"></div>
+    <div class="position-absolute rounded-circle"
+        style="width: 300px; height: 300px; background: rgba(255,255,255,0.05); bottom: -150px; right: -50px;"></div>
+</div>
+
+<!-- ✨ SEARCH & FILTER -->
+<div class="container position-relative z-3" style="margin-top: -35px;">
+    <div class="modern-card p-4 shadow-lg border-0" data-aos="zoom-in">
+        <form method="get" class="row g-3 align-items-center">
+            <!-- Search Input -->
+            <div class="col-lg-7 col-md-6">
+                <div class="search-wrapper position-relative">
+                    <i class="fas fa-search search-icon position-absolute text-muted fs-5"
+                        style="left: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 5;"></i>
+                    <input type="text" name="search"
+                        class="form-control form-control-lg search-input ps-5 bg-light border-0"
+                        placeholder="Search Python, Design, Marketing..." value="{{ search_query }}"
+                        style="border-radius: 50px;">
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-lg-3 col-md-4">
+                <select name="category" class="form-select form-select-lg category-select border-0 bg-light text-dark"
+                    onchange="this.form.submit()" style="border-radius: 50px;">
+                    <option value="">📚 All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-lg-2 col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm fw-bold">
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ✨ ACTIVE FILTERS -->
+{% if search_query or selected_category %}
+<div class="container mt-4" data-aos="fade-right">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span class="text-muted fw-semibold">
+            <i class="fas fa-filter me-2 text-primary"></i>Active Filters:
+        </span>
+        {% if search_query %}
+        <span class="badge bg-primary px-3 py-2 rounded-pill fs-6 shadow-sm">
+            "{{ search_query }}"
+            <a href="{% url 'browse' %}" class="text-white ms-2 ms-auto"><i
+                    class="fas fa-times-circle hover-opacity"></i></a>
+        </span>
+        {% endif %}
+        {% if selected_category %}
+        <span class="badge bg-info text-white px-3 py-2 rounded-pill fs-6 shadow-sm">
+            {{ selected_category }}
+            <a href="?search={{ search_query }}" class="text-white ms-2 ms-auto"><i
+                    class="fas fa-times-circle hover-opacity"></i></a>
+        </span>
+        {% endif %}
+        <a href="{% url 'browse' %}" class="btn btn-sm btn-outline-secondary ms-auto rounded-pill px-3 fw-medium">
+            <i class="fas fa-redo me-1"></i> Clear All
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- ✨ SKILLS GRID -->
+<div class="container py-5">
+    <div class="row g-4">
+        {% if skills %}
+        {% for skill in skills %}
+        <div class="col-xl-3 col-lg-4 col-md-6" data-aos="fade-up">
+            <div class="skill-card modern-card h-100 p-0 text-center overflow-hidden position-relative border-0 shadow-sm"
+                data-skill-id="{{ skill.id }}" style="cursor: pointer; background: white;">
+                <!-- Category Badge -->
+                <div class="position-absolute top-0 end-0 m-3 z-3">
+                    <span
+                        class="badge bg-light text-primary border border-primary px-2 py-1 rounded-pill category-{{ skill.category|slugify }}">
+                        {{ skill.category }}
+                    </span>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-4 pt-5 pb-3 skill-card-body d-flex flex-column h-100 position-relative z-2">
+                    <!-- Skill Icon -->
+                    <div class="skill-icon d-inline-flex mx-auto align-items-center justify-content-center bg-light text-primary rounded-circle mb-3 transition-transform"
+                        style="width: 80px; height: 80px; font-size: 2.5rem;">
+                        {% if 'Python' in skill.name %}
+                        <i class="fab fa-python"></i>
+                        {% elif 'Java' in skill.name and 'JavaScript' not in skill.name %}
+                        <i class="fab fa-java"></i>
+                        {% elif 'JavaScript' in skill.name or 'React' in skill.name or 'Node' in skill.name or 'Angular' in skill.name or 'Vue' in skill.name %}
+                        <i class="fab fa-js"></i>
+                        {% elif 'Android' in skill.name %}
+                        <i class="fab fa-android"></i>
+                        {% elif 'iOS' in skill.name %}
+                        <i class="fab fa-apple"></i>
+                        {% elif 'Flutter' in skill.name or 'React Native' in skill.name %}
+                        <i class="fas fa-mobile-alt"></i>
+                        {% elif 'Design' in skill.name or 'Photoshop' in skill.name or 'Figma' in skill.name %}
+                        <i class="fas fa-palette"></i>
+                        {% elif 'UI/UX' in skill.name %}
+                        <i class="fas fa-pencil-ruler"></i>
+                        {% elif 'Video' in skill.name %}
+                        <i class="fas fa-video"></i>
+                        {% elif '3D' in skill.name %}
+                        <i class="fas fa-cube"></i>
+                        {% elif 'Marketing' in skill.name or 'SEO' in skill.name or 'Social Media' in skill.name %}
+                        <i class="fas fa-bullhorn"></i>
+                        {% elif 'Content Writing' in skill.name %}
+                        <i class="fas fa-pen-fancy"></i>
+                        {% elif 'Data' in skill.name or 'Machine Learning' in skill.name or 'AI' in skill.name or 'Deep Learning' in skill.name %}
+                        <i class="fas fa-brain"></i>
+                        {% elif 'SQL' in skill.name or 'Database' in skill.name %}
+                        <i class="fas fa-database"></i>
+                        {% elif 'Cloud' in skill.name %}
+                        <i class="fas fa-cloud"></i>
+                        {% elif 'Cyber' in skill.name %}
+                        <i class="fas fa-shield-alt"></i>
+                        {% elif 'DevOps' in skill.name %}
+                        <i class="fas fa-cogs"></i>
+                        {% elif 'Blockchain' in skill.name %}
+                        <i class="fas fa-link"></i>
+                        {% elif 'Game' in skill.name %}
+                        <i class="fas fa-gamepad"></i>
+                        {% elif 'Django' in skill.name %}
+                        <i class="fab fa-python"></i>
+                        {% elif 'Flask' in skill.name %}
+                        <i class="fas fa-flask"></i>
+                        {% elif 'C++' in skill.name %}
+                        <i class="fas fa-code"></i>
+                        {% else %}
+                        <i class="fas fa-graduation-cap"></i>
+                        {% endif %}
+                    </div>
+
+                    <!-- Skill Name -->
+                    <h4 class="fw-bold mb-2 text-dark">{{ skill.name }}</h4>
+
+                    <!-- Teacher Count -->
+                    <div class="text-muted small fw-medium mb-auto">
+                        <i class="fas fa-users text-primary me-1"></i>
+                        {{ skill.teacher_count }} Teacher{{ skill.teacher_count|pluralize }}
+                    </div>
+                </div>
+
+                <!-- Hover Overlay Footer -->
+                <div class="skill-overlay-footer p-3 bg-light border-top"
+                    style="transition: transform 0.3s; transform: translateY(100%); position: absolute; bottom:0; left:0; width:100%; z-index: 3;">
+                    <a href="{% url 'match' %}?skill_id={{ skill.id }}"
+                        class="btn btn-primary w-100 rounded-pill shadow-sm fw-bold btn-sm py-2">
+                        Find Teachers <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <!-- No Results -->
+        <div class="col-12 mt-4">
+            <div class="modern-card text-center py-5 shadow-sm border-0" data-aos="zoom-in" style="background: white;">
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle text-muted"
+                        style="width: 100px; height: 100px;">
+                        <i class="fas fa-search" style="font-size: 3rem;"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-3">No skills found</h3>
+                <p class="text-muted mb-4 fs-5 mx-auto" style="max-width: 500px;">
+                    {% if search_query %}
+                    We couldn't find any skills matching "<span class="text-dark fw-semibold">{{ search_query }}</span>"
+                    {% else %}
+                    Try adjusting your filters or browse all skills
+                    {% endif %}
+                </p>
+                <a href="{% url 'browse' %}" class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm">
+                    <i class="fas fa-redo me-2"></i> View All Skills
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ✨ CTA SECTION -->
+<div class="container my-5 pb-4">
+    <div class="modern-card text-center py-5 position-relative overflow-hidden border-0 shadow-md" data-aos="zoom-in"
+        style="background: linear-gradient(135deg, var(--bg-card) 0%, #f0f4f8 100%);">
+        <div class="position-relative z-2">
+            <h3 class="fw-bolder text-dark mb-3">Don't See Your Skill?</h3>
+            <p class="text-muted mb-4 fs-5">
+                Request new skills and help grow our community!
+            </p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
+                <i class="fas fa-plus-circle me-2"></i> Add Your Skills
+            </a>
+            {% else %}
+            <a href="{% url 'register' %}" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
+                <i class="fas fa-user-plus me-2"></i> Join Now - It's Free
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ✨ AOS ANIMATION -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<style>
+    /* Utilities */
+    .hover-opacity:hover {
+        opacity: 0.8;
+    }
+
+    .transition-transform {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* SKILL CARDS */
+    .skill-card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .skill-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg) !important;
+    }
+
+    .skill-card:hover .skill-icon {
+        transform: scale(1.1) rotate(5deg);
+        background: var(--primary-color) !important;
+        color: white !important;
+    }
+
+    .skill-card:hover .skill-overlay-footer {
+        transform: translateY(0);
+    }
+
+    .skill-card:hover .skill-card-body {
+        transform: translateY(-10px);
+    }
+
+    /* CATEGORY COLORS OVERRIDES */
+    .category-programming {
+        border-color: #667eea !important;
+        color: #667eea !important;
+    }
+
+    .category-web-development {
+        border-color: #f5576c !important;
+        color: #f5576c !important;
+    }
+
+    .category-mobile-development {
+        border-color: #00f2fe !important;
+        color: #00f2fe !important;
+    }
+
+    .category-data-ai {
+        border-color: #38f9d7 !important;
+        color: #20c997 !important;
+    }
+
+    .category-design {
+        border-color: #fa709a !important;
+        color: #fa709a !important;
+    }
+
+    .category-marketing {
+        border-color: #30cfd0 !important;
+        color: #30cfd0 !important;
+    }
+
+    /* SEARCH FOCUS */
+    .search-input:focus {
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1) !important;
+    }
+
+    .category-select:focus {
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1) !important;
+    }
+
+    /* ANIMATIONS */
+    .spin-on-hover:hover {
+        animation: spin 1s ease-in-out;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true
+    });
+
+    // Handle skill card clicks
+    document.addEventListener('DOMContentLoaded', function () {
+        var skillCards = document.querySelectorAll('.skill-card');
+        skillCards.forEach(function (card) {
+            card.addEventListener('click', function (event) {
+                // Don't navigate if clicking on a link
+                if (!event.target.closest('a')) {
+                    var skillId = this.getAttribute('data-skill-id');
+                    if (skillId) {
+                        window.location.href = '/match/?skill_id=' + skillId;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

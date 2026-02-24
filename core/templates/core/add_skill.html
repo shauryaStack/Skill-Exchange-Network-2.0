@@ -1,0 +1,149 @@
+<!--
+    add_skill.html — Add Teaching Skill Page
+
+    Form for users to add a skill they can teach. Skills are grouped by
+    category using Django's {% regroup %} template tag. Skills the user
+    already teaches are shown as disabled options.
+
+    Template variables from views.py/add_skill():
+      - skills: All available Skill objects
+      - teaching_skill_ids: List of skill IDs this user already teaches
+
+    Form fields: skill_id (dropdown), proficiency (dropdown),
+    available_time (text), notes (textarea)
+    POSTs to views.py/add_skill() which creates a UserTeaches record.
+-->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Add Skill - Skill Exchange{% endblock %}
+
+{% block content %}
+<!-- ✅ HEADER -->
+<div class="position-relative overflow-hidden pt-5 pb-5 mb-4"
+    style="background: white; border-bottom: 1px solid var(--border-color);">
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: radial-gradient(circle at top right, rgba(40, 167, 69, 0.08) 0%, transparent 60%);"></div>
+
+    <div class="container text-center pt-4 position-relative z-2">
+        <h1 class="text-dark mb-3 fw-bolder" style="font-size: 3.5rem; letter-spacing: -1px;" data-aos="fade-down">
+            <i class="fas fa-plus-circle me-3 text-success"></i>Add Teaching Skill
+        </h1>
+        <p class="text-muted fw-medium mb-0 fs-4" data-aos="fade-up">
+            Share your knowledge and help others learn
+        </p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Back Button -->
+            <div class="mb-4" data-aos="fade-right">
+                <a href="{% url 'profile' %}" class="btn btn-outline-secondary fw-bold rounded-pill shadow-sm px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                </a>
+            </div>
+
+            <!-- Add Skill Form -->
+            <div class="modern-card bg-white border-0 shadow-sm p-4 p-md-5" style="border-radius: 20px;"
+                data-aos="fade-up">
+                <h3 class="text-dark mb-4 fw-bold">
+                    <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>
+                    Select Skill to Teach
+                </h3>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Skill Selection -->
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-bold">
+                            <i class="fas fa-book me-2 text-primary"></i>Select Skill *
+                        </label>
+                        <select name="skill_id" id="skill_id" class="form-select form-select-lg bg-light border-0"
+                            required style="border-radius: 12px; cursor: pointer;">
+                            <option value="">Choose a skill...</option>
+                            {% regroup skills by category as category_list %}
+                            {% for category in category_list %}
+                            <optgroup label="{{ category.grouper }}" class="fw-bold text-primary">
+                                {% for skill in category.list %}
+                                <option value="{{ skill.id }}" class="text-dark fw-normal" {% if skill.id in
+                                    teaching_skill_ids %}disabled{% endif %}>
+                                    {{ skill.name }}
+                                    {% if skill.id in teaching_skill_ids %}(Already teaching){% endif %}
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Proficiency Level -->
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-bold">
+                            <i class="fas fa-star me-2 text-warning"></i>Your Proficiency Level *
+                        </label>
+                        <select name="proficiency" class="form-select form-select-lg bg-light border-0"
+                            style="border-radius: 12px; cursor: pointer;">
+                            <option value="beginner">Beginner - Just started learning</option>
+                            <option value="intermediate" selected>Intermediate - Good understanding</option>
+                            <option value="advanced">Advanced - Very experienced</option>
+                            <option value="expert">Expert - Professional level</option>
+                        </select>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-bold">
+                            <i class="fas fa-clock me-2 text-info"></i>When are you available?
+                        </label>
+                        <input type="text" name="available_time" class="form-control form-control-lg bg-light border-0"
+                            placeholder="e.g., Weekends, Weekday evenings, Flexible" value="Flexible"
+                            style="border-radius: 12px;">
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-bold">
+                            <i class="fas fa-comment me-2 text-muted"></i>Additional Notes (Optional)
+                        </label>
+                        <textarea name="notes" class="form-control bg-light border-0" rows="4"
+                            placeholder="Share your teaching experience, methods, or any special requirements..."
+                            style="border-radius: 12px; resize: none;"></textarea>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="p-3 mb-4 bg-light rounded-3 border-start border-4 border-info shadow-sm">
+                        <p class="text-muted mb-0 fw-medium">
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            <strong>Note:</strong> Once you add a skill, students can request to learn from you. You can
+                            accept or decline requests from your profile.
+                        </p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-flex flex-column flex-sm-row gap-3">
+                        <button type="submit" class="btn btn-success btn-lg flex-fill rounded-pill shadow-sm fw-bold">
+                            <i class="fas fa-plus me-2"></i>Add Skill
+                        </button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-lg rounded-pill fw-bold">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 600,
+        easing: 'ease-out-cubic',
+        once: true
+    });
+</script>
+{% endblock %}

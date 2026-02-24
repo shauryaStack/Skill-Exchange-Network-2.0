@@ -1,0 +1,25 @@
+Steps to Reset the Database
+
+1. Stop the server (Ctrl+C in the terminal)
+
+2. Delete the database file:
+
+powershell
+Remove-Item "D:\Updated Field Project\updated_skill_exchange_network\db.sqlite3"
+
+3. Re-run migrations to create a fresh database:
+
+powershell
+python manage.py migrate
+
+4. (Optional) Create a superuser for admin access:
+
+powershell
+python manage.py createsuperuser
+
+5. Start the server again:
+
+powershell
+python manage.py runserver
+
+6. Register again on /register/ with the same email, name, password — everything will work since the old data is gone.

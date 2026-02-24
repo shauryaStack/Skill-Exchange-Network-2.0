@@ -1,0 +1,330 @@
+<!--
+    profile.html — User Dashboard / Profile Page
+
+    The main dashboard for logged-in users. Shows personal info and all
+    teaching/learning activity in a two-column layout.
+
+    Template variables from views.py/profile_view():
+      - teaches: UserTeaches objects (skills this user teaches)
+      - incoming_requests: Pending ExchangeRequests where user is the receiver
+      - sent_requests: ExchangeRequests where user is the requester
+      - accepted_exchanges: Accepted exchanges involving this user
+
+    Layout:
+      Left column (col-lg-8):
+        - Skills I Teach — grid of skill cards with remove buttons
+        - Incoming Requests — pending requests with accept/reject buttons
+      Right column (col-lg-4):
+        - My Sent Requests — list with status badges (pending/accepted/rejected)
+        - Active Exchanges — accepted exchanges with "Schedule" button
+-->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}My Profile - Skill Exchange{% endblock %}
+
+{% block content %}
+<!-- ✅ PROFILE HEADER -->
+<div class="position-relative overflow-hidden pt-5 pb-5 mb-4"
+    style="background: white; border-bottom: 1px solid var(--border-color);">
+    <!-- Background accents -->
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: radial-gradient(circle at top right, rgba(74, 144, 226, 0.08) 0%, transparent 60%);"></div>
+
+    <div class="container position-relative z-1 pt-4">
+        <div class="row align-items-center">
+            <!-- Profile Info -->
+            <div class="col-lg-8" data-aos="fade-right">
+                <div class="d-flex align-items-center gap-4">
+                    <!-- Avatar -->
+                    <div class="position-relative">
+                        <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm"
+                            style="width: 120px; height: 120px; font-size: 3.5rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 bg-success rounded-circle shadow-sm"
+                            style="width: 30px; height: 30px; border: 3px solid white;"></div>
+                    </div>
+
+                    <!-- User Details -->
+                    <div>
+                        <h1 class="text-dark mb-2 fw-bolder" style="font-size: 2.5rem;">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h1>
+                        <p class="text-muted mb-2 fw-medium" style="font-size: 1.1rem;">
+                            <i class="fas fa-envelope me-2 text-primary"></i>{{ user.email }}
+                        </p>
+                        {% if user.division %}
+                        <span class="badge border border-primary text-primary px-3 py-2 mt-1 rounded-pill fw-bold"
+                            style="background: rgba(74, 144, 226, 0.1); font-size: 0.9rem;">
+                            <i class="fas fa-graduation-cap me-1"></i>{{ user.division }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-left">
+                <div class="modern-card border-0 shadow-sm p-4 bg-white" style="border-radius: 20px;">
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <h3 class="text-primary mb-1 fw-bolder">{{ teaches.count }}</h3>
+                            <small class="text-muted fw-bold text-uppercase"
+                                style="letter-spacing: 1px;">Teaching</small>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="text-primary mb-1 fw-bolder">{{ accepted_exchanges.count }}</h3>
+                            <small class="text-muted fw-bold text-uppercase"
+                                style="letter-spacing: 1px;">Exchanges</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ DASHBOARD CONTENT -->
+<div class="container">
+    <div class="row g-4">
+        <!-- LEFT COLUMN - Skills & Requests -->
+        <div class="col-lg-8">
+            <!-- Teaching Skills -->
+            <div class="modern-card bg-white border-0 shadow-sm mb-4" data-aos="fade-up">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-dark mb-0 fw-bolder">
+                        <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>
+                        Skills I Teach
+                    </h3>
+                    <a href="{% url 'add_skill' %}" class="btn btn-sm btn-primary rounded-pill shadow-sm px-3 fw-bold">
+                        <i class="fas fa-plus me-1"></i> Add Skill
+                    </a>
+                </div>
+
+                {% if teaches %}
+                <div class="row g-3">
+                    {% for teach in teaches %}
+                    <div class="col-md-6">
+                        <div class="p-4 position-relative h-100 transition-transform hover-shadow"
+                            style="background: var(--bg-body); border-radius: 16px; border: 1px solid var(--border-color);">
+                            <!-- ✅ Remove Button -->
+                            <form method="post" action="{% url 'remove_skill' teach.id %}"
+                                class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                    onclick="return confirm('Remove {{ teach.skill.name }} from your teaching list?')"
+                                    title="Remove skill">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+
+                            <h5 class="text-dark mb-3 fw-bold pe-4">{{ teach.skill.name }}</h5>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-primary px-2 py-1 rounded">{{ teach.proficiency|default:"Intermediate" }}</span>
+                                <span class="badge bg-light text-dark border px-2 py-1 rounded">
+                                    <i class="fas fa-clock me-1 text-muted"></i>{{ teach.available_time|default:"Flexible" }}
+                                </span>
+                            </div>
+                            {% if teach.notes %}
+                            <p class="text-muted mb-0 small">{{ teach.notes|truncatewords:10 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 bg-light rounded-4 border border-dashed">
+                    <i class="fas fa-book-open" style="font-size: 3rem; color: var(--primary-color); opacity: 0.2;"></i>
+                    <p class="text-muted mt-3 mb-3 fw-medium">You haven't added any teaching skills yet</p>
+                    <a href="{% url 'add_skill' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-plus me-2"></i> Add Your First Skill
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Incoming Requests -->
+            <div class="modern-card bg-white border-0 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="text-dark mb-4 fw-bolder">
+                    <i class="fas fa-inbox me-2 text-primary"></i>
+                    Incoming Requests
+                    {% if incoming_requests %}
+                    <span class="badge bg-danger ms-2 rounded-pill shadow-sm">{{ incoming_requests.count }}</span>
+                    {% endif %}
+                </h3>
+
+                {% if incoming_requests %}
+                <div class="d-flex flex-column gap-3">
+                    {% for request in incoming_requests %}
+                    <div
+                        class="p-4 bg-light rounded-4 border-start border-primary border-4 shadow-sm transition-transform hover-shadow">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="text-dark mb-2 fw-bold">
+                                    {{ request.requester.first_name }} {{ request.requester.last_name }}
+                                </h5>
+                                <div class="bg-white p-3 rounded-3 border mb-3">
+                                    <p class="text-dark mb-2 fs-6">
+                                        <i class="fas fa-bullseye text-primary me-2 width-20"></i><span
+                                            class="text-muted me-1">Wants to learn:</span> <strong>{{ request.skill.name
+                                            }}</strong><br>
+                                        <i class="fas fa-gift text-success me-2 width-20"></i><span
+                                            class="text-muted me-1">Offering:</span> <strong>{{ request.offering_skill
+                                            }}</strong><br>
+                                        <i class="fas fa-calendar-alt text-warning me-2 width-20"></i><span
+                                            class="text-muted me-1">Preferred Time:</span> <strong>{{
+                                            request.preferred_time }}</strong>
+                                    </p>
+                                    {% if request.message %}
+                                    <div class="border-top pt-2 mt-2">
+                                        <p class="text-muted mb-0 small fst-italic">
+                                            "{{ request.message }}"
+                                        </p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted fw-bold">
+                                    <i class="fas fa-clock me-1"></i>{{ request.created_at|timesince }} ago
+                                </small>
+                            </div>
+                            <div class="d-flex flex-column gap-2 ms-3">
+                                <form method="post" action="{% url 'accept_exchange' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success rounded-circle shadow-sm"
+                                        style="width: 40px; height: 40px;" title="Accept">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'reject_exchange' request.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger rounded-circle bg-white"
+                                        style="width: 40px; height: 40px;" title="Reject">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 bg-light rounded-4 border border-dashed">
+                    <i class="fas fa-inbox text-primary" style="font-size: 3rem; opacity: 0.2;"></i>
+                    <p class="text-muted mt-3 mb-0 fw-medium">No pending requests</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN - Activity -->
+        <div class="col-lg-4">
+            <!-- Sent Requests -->
+            <div class="modern-card bg-white border-0 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
+                <h4 class="text-dark mb-4 fw-bolder">
+                    <i class="fas fa-paper-plane me-2 text-primary"></i>My Sent Requests
+                </h4>
+
+                {% if sent_requests %}
+                <div class="d-flex flex-column gap-3">
+                    {% for request in sent_requests|slice:":5" %}
+                    <div class="p-3 bg-light rounded-4 border">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-dark mb-1 fw-bold fs-6">
+                                    {{ request.skill.name }}
+                                </p>
+                                <small class="text-muted fw-medium">
+                                    To: {{ request.receiver.first_name }}
+                                </small>
+                            </div>
+                            <span class="badge px-2 py-1 rounded
+                                {% if request.status == 'pending' %}bg-warning text-dark
+                                {% elif request.status == 'accepted' %}bg-success
+                                {% else %}bg-danger{% endif %}">
+                                {{ request.status|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 bg-light rounded-3">
+                    <p class="text-muted mb-3 fs-6">No requests sent yet</p>
+                    <a href="{% url 'browse' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">Find
+                        Teachers</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Active Exchanges -->
+            <div class="modern-card bg-white border-0 shadow-sm" data-aos="fade-up" data-aos-delay="300">
+                <h4 class="text-dark mb-4 fw-bolder">
+                    <i class="fas fa-handshake me-2 text-success"></i>Active Exchanges
+                </h4>
+
+                {% if accepted_exchanges %}
+                <div class="d-flex flex-column gap-3">
+                    {% for exchange in accepted_exchanges|slice:":5" %}
+                    <div class="p-3 bg-light rounded-4 border border-success border-opacity-25">
+                        <p class="text-dark mb-1 fw-bold">
+                            {{ exchange.skill.name }}
+                        </p>
+                        <small class="text-muted fw-medium d-block mb-3">
+                            {% if exchange.requester == user %}
+                            with {{ exchange.receiver.first_name }}
+                            {% else %}
+                            with {{ exchange.requester.first_name }}
+                            {% endif %}
+                        </small>
+                        <a href="{% url 'sessions' %}"
+                            class="btn btn-sm btn-success w-100 rounded-pill shadow-sm fw-bold px-3">
+                            <i class="fas fa-calendar-check me-2"></i> Schedule
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 bg-light rounded-3">
+                    <p class="text-muted mb-0 fs-6">No active exchanges right now.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pb-5"></div>
+
+<style>
+    /* Utilities */
+    .hover-shadow {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md) !important;
+    }
+
+    .border-dashed {
+        border-style: dashed !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    .width-20 {
+        width: 20px;
+        text-align: center;
+    }
+</style>
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true
+    });
+</script>
+{% endblock %}

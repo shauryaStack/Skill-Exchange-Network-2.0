@@ -1,0 +1,164 @@
+<!--
+    register.html — Registration Page
+
+    Two ways to register:
+      1. Email form — collects first/last name, email, division, phone, password
+         POSTs to views.py/register_view() which creates a Django User.
+      2. Google Sign-In — uses Firebase Auth (window.firebaseAuth.googleSignIn())
+         which opens the Google OAuth popup and redirects to /profile/ on success.
+
+    Fields: first_name*, last_name*, email*, division, phone, password*, password2*
+    The register_view auto-seeds 35 skills in the database if none exist.
+-->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Register - Skill Exchange{% endblock %}
+
+{% block content %}
+<div class="position-relative overflow-hidden"
+    style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; padding: 60px 20px;">
+    <!-- Decorative faint circles -->
+    <div class="position-absolute rounded-circle"
+        style="width: 400px; height: 400px; background: rgba(74, 144, 226, 0.05); top: -100px; left: -100px; z-index: 0;">
+    </div>
+    <div class="position-absolute rounded-circle"
+        style="width: 300px; height: 300px; background: rgba(74, 144, 226, 0.05); bottom: -150px; right: -50px; z-index: 0;">
+    </div>
+
+    <div class="container position-relative z-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 mt-4">
+                <div class="modern-card border-0 shadow-lg p-5 bg-white" data-aos="zoom-in"
+                    style="border-radius: 24px;">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-primary mb-3 shadow-sm"
+                            style="width: 80px; height: 80px; font-size: 2.5rem;">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2 class="text-dark mb-2 fw-bolder" style="font-size: 2rem;">Join Skill Exchange</h2>
+                        <p class="text-muted fw-medium" style="font-size: 1.1rem;">Create your free account and start
+                            learning</p>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row g-3 mb-3">
+                            <!-- First Name -->
+                            <div class="col-md-6">
+                                <label class="form-label text-dark fw-bold">
+                                    <i class="fas fa-user me-2 text-primary"></i>First Name *
+                                </label>
+                                <input type="text" name="first_name"
+                                    class="form-control form-control-lg bg-light border-0" placeholder="John" required
+                                    style="border-radius: 12px;">
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <label class="form-label text-dark fw-bold">
+                                    <i class="fas fa-user me-2 text-primary"></i>Last Name *
+                                </label>
+                                <input type="text" name="last_name"
+                                    class="form-control form-control-lg bg-light border-0" placeholder="Doe" required
+                                    style="border-radius: 12px;">
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Email Address *
+                            </label>
+                            <input type="email" name="email" class="form-control form-control-lg bg-light border-0"
+                                placeholder="your@email.com" required style="border-radius: 12px;">
+                        </div>
+
+                        <!-- Division -->
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-graduation-cap me-2 text-primary"></i>Division / Class
+                            </label>
+                            <input type="text" name="division" class="form-control form-control-lg bg-light border-0"
+                                placeholder="e.g., SYBSc IT, TYBSc CS" style="border-radius: 12px;">
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-phone me-2 text-primary"></i>Phone Number
+                            </label>
+                            <input type="tel" name="phone" class="form-control form-control-lg bg-light border-0"
+                                placeholder="+91 98765 43210" style="border-radius: 12px;">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Password *
+                            </label>
+                            <input type="password" name="password"
+                                class="form-control form-control-lg bg-light border-0" placeholder="••••••••" required
+                                minlength="6" style="border-radius: 12px;">
+                            <small class="text-muted fw-medium mt-1 d-block">Minimum 6 characters</small>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Confirm Password *
+                            </label>
+                            <input type="password" name="password2"
+                                class="form-control form-control-lg bg-light border-0" placeholder="••••••••" required
+                                style="border-radius: 12px;">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3 rounded-pill shadow-sm fw-bold">
+                            Create Account <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                    <!-- Login Link -->
+                    <div class="text-center mt-3 pt-4 border-top">
+                        <p class="text-muted mb-3 fw-medium">Already have an account?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg w-100 rounded-pill fw-bold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login Here
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 600, once: true });
+
+    // Google Sign-Up Handler
+    document.getElementById('google-signup-btn')?.addEventListener('click', async function () {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing up...';
+        this.disabled = true;
+
+        if (typeof window.firebaseAuth !== 'undefined') {
+            const result = await window.firebaseAuth.googleSignIn();
+            if (result.success) {
+                window.location.href = '/profile/';
+            } else {
+                alert('Sign-up failed: ' + result.error);
+                this.innerHTML = '<i class="fab fa-google me-2"></i>Sign up with Google';
+                this.disabled = false;
+            }
+        } else {
+            alert('Firebase not initialized');
+            this.innerHTML = '<i class="fab fa-google me-2"></i>Sign up with Google';
+            this.disabled = false;
+        }
+    });
+</script>
+{% endblock %}

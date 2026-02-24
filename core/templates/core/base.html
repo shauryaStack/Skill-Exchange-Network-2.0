@@ -1,0 +1,516 @@
+<!--
+    base.html — Master Layout Template
+
+    This is the parent template that ALL other pages extend.
+    It defines the common structure: navbar, messages, footer, and scripts.
+
+    How Django template inheritance works:
+    - Child templates use `extends "core/base.html"` to inherit this layout
+    - `block content` is where each page inserts its unique content
+    - `block title` lets each page set its own page title
+    - `block extra_css` and `block extra_js` allow page-specific assets
+
+    Structure:
+    1. <head>: Meta tags, Bootstrap CSS, fonts, inline styles, extra_css block
+    2. Decorative blobs: Background gradient circles for visual depth
+    3. Navbar: Navigation with auth-aware links (login vs profile)
+    4. Messages: Django flash messages (success/error alerts)
+    5. Main content: `block content` — filled by child templates
+    6. Footer: Site info and links
+    7. Scripts: Bootstrap JS, Firebase SDK, notification polling, extra_js block
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Skill Exchange Network{% endblock %}</title>
+
+    <!-- ✅ BOOTSTRAP, FONTS & FONT AWESOME -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Inline styles define the light-mode design system.
+         These CSS variables override style.css for the minimalist look.
+         Changing these variables will update colors across all pages. -->
+    <style>
+        /* Design tokens — change these to update the entire color scheme */
+        :root {
+            --primary-color: #4a90e2;
+            /* Soft beautiful blue */
+            --primary-hover: #357abd;
+            --secondary-color: #f7fafc;
+            --accent-color: #63b3ed;
+            --bg-body: #f4f7f6;
+            /* Very subtle off-white */
+            --bg-card: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --radius-md: 24px;
+            --radius-sm: 12px;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at top right, rgba(74, 144, 226, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at bottom left, rgba(74, 144, 226, 0.03) 0%, transparent 40%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
+        }
+
+        /* Typography Highlights */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        .navbar-brand {
+            color: var(--text-main) !important;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            transition: var(--transition);
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        /* Cards */
+        .glass-card,
+        .modern-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover,
+        .modern-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .action-icon {
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 30px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            border-radius: 30px;
+            font-weight: 600;
+            border-width: 2px;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Badges & Notifications */
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.7rem;
+            padding: 0.35rem;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Forms */
+        .form-control {
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1rem;
+            background: #f8fafc;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+            color: var(--text-main);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Dropdowns */
+        .dropdown-menu {
+            border: none;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.05);
+            color: var(--primary-color);
+        }
+
+        /* Base utility overrides */
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        /* Abstract Background blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #a1c4fd;
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: #e2ebf0;
+            bottom: -200px;
+            right: -100px;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #ffecd2;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Decorative background blobs — large blurred circles that create
+         a subtle gradient effect behind the page content (purely visual) -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <!-- NAVBAR — Fixed at the top of every page.
+         Shows different links depending on whether user is logged in.
+         `if user.is_authenticated` is how Django checks login state in templates. -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand fs-4" href="{% url 'index' %}">
+                <i class="fas fa-layer-group me-2" style="color: var(--primary-color);"></i>Skill Exchange
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ms-4 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'browse' %}">
+                            <i class="fas fa-search me-1"></i>Browse
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="fas fa-user-circle me-1"></i>Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'sessions' %}">
+                            <i class="fas fa-calendar-alt me-1"></i>Sessions
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Right side of navbar: notification bell + user dropdown (logged in)
+                     OR login/register buttons (logged out) -->
+                <ul class="navbar-nav align-items-center">
+                    {% if user.is_authenticated %}
+                    <!-- Notification bell — badge count is updated via AJAX polling (see bottom of page) -->
+                    <li class="nav-item notification-badge me-2">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="fas fa-bell fs-5"></i>
+                            <span id="notification-badge" class="badge bg-danger" style="display: none;">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                            role="button" data-bs-toggle="dropdown">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                style="width: 32px; height: 32px; font-weight: 700;">
+                                {{ user.first_name|default:user.username|make_list|first|upper }}
+                            </div>
+                            <span class="user-name fw-semibold text-dark">{{ user.first_name|default:user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="fas fa-user me-2 text-primary"></i>Profile
+                                </a></li>
+                            <li><a class="dropdown-item" href="{% url 'sessions' %}">
+                                    <i class="fas fa-calendar me-2 text-primary"></i>Sessions
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item me-2">
+                        <a class="nav-link fw-semibold text-dark" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary px-4 shadow-sm" href="{% url 'register' %}">Get Started</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FLASH MESSAGES — Django's messaging framework.
+         Views use messages.success/error/warning to set these.
+         They auto-display here and can be dismissed by the user.
+         message.tags maps to Bootstrap alert classes (success, danger, etc.) -->
+    <div id="alert-container" class="container" style="margin-top: 100px;">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-4 border-0"
+            role="alert" style="background: white;">
+            <strong>Notice:</strong> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- MAIN CONTENT AREA — Each child template fills this block.
+         min-height ensures the footer doesn't float up on short pages. -->
+    <main style="min-height: calc(100vh - 180px); padding-top: 2rem;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ✅ FOOTER -->
+    <footer class="py-5 mt-5" style="background: #ffffff; border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+                    <h5 class="mb-3 fw-bold" style="color: var(--text-main);">
+                        <i class="fas fa-layer-group me-2 text-primary"></i>Skill Exchange
+                    </h5>
+                    <p class="mb-0 text-muted">A beautiful place to connect, teach, learn, and grow together. Built with
+                        modern design principles for students.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="mb-3 d-flex justify-content-center justify-content-md-end gap-3">
+                        <a href="{% url 'index' %}"
+                            class="text-muted text-decoration-none fw-medium hover-primary">Home</a>
+                        <a href="{% url 'browse' %}"
+                            class="text-muted text-decoration-none fw-medium hover-primary">Browse</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}"
+                            class="text-muted text-decoration-none fw-medium hover-primary">Profile</a>
+                        {% else %}
+                        <a href="{% url 'login' %}"
+                            class="text-muted text-decoration-none fw-medium hover-primary">Login</a>
+                        {% endif %}
+                    </div>
+                    <p class="mb-0 text-muted small">
+                        &copy; 2026 Skill Exchange Network. Elevating education.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS — required for dropdowns, modals, tooltips, collapse -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Firebase SDK (modular v10) — loaded from Google CDN.
+         This initializes Firebase Auth in the browser and exposes
+         window.firebaseAuth for Google Sign-In, email auth, etc.
+         The auth functions are used on login.html and register.html. -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // ✅ YOUR ACTUAL FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmEdt83_McgV7MR1gFXp8w4isepzLqQrw",
+            authDomain: "updated-skill-exchange-network.firebaseapp.com",
+            projectId: "updated-skill-exchange-network",
+            storageBucket: "updated-skill-exchange-network.firebasestorage.app",
+            messagingSenderId: "29560330648",
+            appId: "1:29560330648:web:47db90ac713b8c1be673ed",
+            measurementId: "G-M7G4KTBGX5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        window.firebaseAuth = {
+            googleSignIn: async () => {
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    return { success: true, user: result.user };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            },
+            emailSignIn: async (email, password) => {
+                try {
+                    const result = await signInWithEmailAndPassword(auth, email, password);
+                    return { success: true, user: result.user };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            },
+            emailSignUp: async (email, password) => {
+                try {
+                    const result = await createUserWithEmailAndPassword(auth, email, password);
+                    return { success: true, user: result.user };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+    </script>
+
+    <!-- NOTIFICATION POLLING — Only loaded for authenticated users.
+         Fetches pending request count from the API every 30 seconds
+         and updates the bell icon badge in the navbar.
+         This gives users real-time-ish notification updates without WebSockets. -->
+    {% if user.is_authenticated %}
+    <script>
+        function updateNotifications() {
+            fetch('/api/notifications/')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('notification-badge');
+                    if (data.pending_requests > 0) {
+                        badge.textContent = data.pending_requests;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching notifications:', error));
+        }
+        // Fetch immediately on page load, then every 30 seconds
+        updateNotifications();
+        setInterval(updateNotifications, 30000);
+    </script>
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

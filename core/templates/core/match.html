@@ -1,0 +1,290 @@
+<!--
+    match.html — Find Teachers Page
+
+    Shows all users who teach a specific skill. Users can send an
+    exchange request via a Bootstrap modal with offering skill, time, and message.
+
+    Template variables from views.py/match_view():
+      - skill: The Skill object being searched for (or None)
+      - teachers: QuerySet of UserTeaches objects for that skill
+
+    Key interactions:
+      - "Request Exchange" button opens a modal (single modal reused via JS data-* attributes)
+      - Modal form POSTs to /request-exchange/ with teacher_id, skill_id, offering_skill, etc.
+      - If user is not authenticated → shows "Login to Request" link instead
+      - If user IS the teacher → shows disabled "This is you" button
+-->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Find Teachers - Skill Exchange{% endblock %}
+
+{% block content %}
+<!-- ✅ HEADER -->
+<div class="position-relative overflow-hidden pt-5 pb-5 mb-4"
+    style="background: white; border-bottom: 1px solid var(--border-color);">
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: radial-gradient(circle at top right, rgba(74, 144, 226, 0.08) 0%, transparent 60%);"></div>
+
+    <div class="container text-center pt-4 position-relative z-2">
+        <h1 class="text-dark mb-3 fw-bolder" style="font-size: 3.5rem; letter-spacing: -1px;" data-aos="fade-down">
+            <i class="fas fa-users me-3 text-primary"></i>
+            {% if skill %}Find Teachers for {{ skill.name }}{% else %}Find Your Perfect Teacher{% endif %}
+        </h1>
+        {% if skill %}
+        <p class="text-muted fw-medium mb-4 fs-4" data-aos="fade-up">
+            {{ teachers.count }} expert teacher{{ teachers.count|pluralize }} available
+        </p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container py-5">
+    {% if skill %}
+    <!-- Back Button -->
+    <div class="mb-4" data-aos="fade-right">
+        <a href="{% url 'browse' %}" class="btn btn-outline-secondary fw-bold rounded-pill shadow-sm px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to Browse
+        </a>
+    </div>
+
+    <!-- Teachers Grid -->
+    {% if teachers %}
+    <div class="row g-4">
+        {% for teacher_obj in teachers %}
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+            <div class="modern-card bg-white border-0 shadow-sm h-100 teacher-card p-4" style="border-radius: 20px;">
+                <!-- Teacher Avatar -->
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm mx-auto mb-3"
+                        style="width: 100px; height: 100px; font-size: 2.8rem;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+
+                    <!-- Teacher Name -->
+                    <h4 class="text-dark mb-2 fw-bold">
+                        {{ teacher_obj.user.first_name }} {{ teacher_obj.user.last_name }}
+                    </h4>
+
+                    <!-- Division Badge -->
+                    {% if teacher_obj.user.division %}
+                    <span class="badge border border-warning text-warning px-3 py-2 mt-1 rounded-pill fw-bold"
+                        style="background: rgba(255, 193, 7, 0.1);">
+                        <i class="fas fa-graduation-cap me-1"></i>{{ teacher_obj.user.division }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Teacher Details -->
+                <div class="mb-4">
+                    <!-- Proficiency -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+                        <span class="text-muted fw-bold">
+                            <i class="fas fa-star me-2 text-warning"></i>Proficiency
+                        </span>
+                        <span class="badge bg-success px-2 py-1">
+                            {{ teacher_obj.proficiency|title }}
+                        </span>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+                        <span class="text-muted fw-bold">
+                            <i class="fas fa-clock me-2 text-info"></i>Available
+                        </span>
+                        <span class="text-dark fw-bold">
+                            {{ teacher_obj.available_time }}
+                        </span>
+                    </div>
+
+                    <!-- Notes -->
+                    {% if teacher_obj.notes %}
+                    <div class="p-3 mt-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
+                        <p class="text-muted mb-0 small fst-italic">
+                            <i class="fas fa-quote-left me-2 text-primary"></i>{{ teacher_obj.notes }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Button -->
+                {% if user.is_authenticated and user != teacher_obj.user %}
+                <button type="button" class="btn btn-primary w-100 rounded-pill shadow-sm fw-bold px-4 py-2"
+                    data-bs-toggle="modal" data-bs-target="#requestModal" data-teacher-id="{{ teacher_obj.user.id }}"
+                    data-teacher-name="{{ teacher_obj.user.first_name }} {{ teacher_obj.user.last_name }}"
+                    data-skill-id="{{ skill.id }}" data-skill-name="{{ skill.name }}">
+                    <i class="fas fa-paper-plane me-2"></i>Request Exchange
+                </button>
+
+                {% elif not user.is_authenticated %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 rounded-pill fw-bold">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Request
+                </a>
+                {% else %}
+                <button class="btn btn-secondary w-100 rounded-pill fw-bold" disabled>
+                    <i class="fas fa-user me-2"></i>This is you
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Request Modal (Single Instance) -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-bottom bg-light"
+                    style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <h5 class="modal-title text-dark fw-bold">
+                        <i class="fas fa-handshake me-2 text-primary"></i>Request Exchange
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form method="post" action="{% url 'request_exchange' %}">
+                    {% csrf_token %}
+                    <div class="modal-body p-4">
+                        <input type="hidden" name="teacher_id" id="modal_teacher_id">
+                        <input type="hidden" name="skill_id" id="modal_skill_id">
+
+                        <!-- Teacher Info -->
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm mx-auto mb-3"
+                                style="width: 70px; height: 70px; font-size: 2rem;">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h6 class="text-dark mb-1 fw-bold fs-5" id="modal_teacher_name"></h6>
+                            <small class="text-primary fw-bold" id="modal_skill_name"></small>
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="mb-4">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-gift me-2 text-success"></i>What skill will you offer in exchange? *
+                            </label>
+                            <input type="text" name="offering_skill"
+                                class="form-control form-control-lg bg-light border-0"
+                                placeholder="e.g., Python Programming, Web Design..." required
+                                style="border-radius: 12px;">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-clock me-2 text-warning"></i>Preferred Time
+                            </label>
+                            <input type="text" name="preferred_time"
+                                class="form-control form-control-lg bg-light border-0"
+                                placeholder="e.g., Weekends, Evenings..." value="Flexible" style="border-radius: 12px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">
+                                <i class="fas fa-comment me-2 text-muted"></i>Message (Optional)
+                            </label>
+                            <textarea name="message" class="form-control bg-light border-0" rows="4"
+                                placeholder="Introduce yourself and explain why you want to learn this skill..."
+                                style="border-radius: 12px; resize: none;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top bg-light"
+                        style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill fw-bold"
+                            data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary rounded-pill shadow-sm fw-bold px-4">
+                            <i class="fas fa-paper-plane me-2"></i>Send Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- No Teachers Available -->
+    <div class="modern-card bg-white border-0 shadow-sm text-center py-5 rounded-4" data-aos="zoom-in">
+        <div class="mb-4">
+            <i class="fas fa-user-slash text-muted" style="font-size: 5rem; opacity: 0.3;"></i>
+        </div>
+        <h3 class="text-dark fw-bold mb-3">No teachers available yet</h3>
+        <p class="text-muted fw-medium mb-4 mx-auto" style="max-width: 500px;">
+            Be the first to teach {{ skill.name }}! Share your knowledge and help others learn.
+        </p>
+        <a href="{% url 'profile' %}" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold px-4">
+            <i class="fas fa-plus me-2"></i>Become a Teacher
+        </a>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- No Skill Selected -->
+    <div class="modern-card bg-white border-0 shadow-sm text-center py-5 rounded-4" data-aos="zoom-in">
+        <div class="mb-4">
+            <i class="fas fa-info-circle text-primary" style="font-size: 5rem; opacity: 0.3;"></i>
+        </div>
+        <h3 class="text-dark fw-bold mb-3">Select a skill to find teachers</h3>
+        <p class="text-muted fw-medium mb-4">
+            Browse our skills catalog and find the perfect teacher for you
+        </p>
+        <a href="{% url 'browse' %}" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold px-4">
+            <i class="fas fa-search me-2"></i>Browse Skills
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .teacher-card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .teacher-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-md) !important;
+    }
+
+    .form-control:focus {
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1) !important;
+    }
+</style>
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 600,
+        easing: 'ease-out-cubic',
+        once: true
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var requestModal = document.getElementById('requestModal');
+        if (requestModal) {
+            requestModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                var button = event.relatedTarget;
+
+                // Extract info from data-* attributes
+                var teacherId = button.getAttribute('data-teacher-id');
+                var teacherName = button.getAttribute('data-teacher-name');
+                var skillId = button.getAttribute('data-skill-id');
+                var skillName = button.getAttribute('data-skill-name');
+
+                // Update the modal's content.
+                var modalTeacherIdInput = requestModal.querySelector('#modal_teacher_id');
+                var modalSkillIdInput = requestModal.querySelector('#modal_skill_id');
+                var modalTeacherName = requestModal.querySelector('#modal_teacher_name');
+                var modalSkillName = requestModal.querySelector('#modal_skill_name');
+
+                if (modalTeacherIdInput) modalTeacherIdInput.value = teacherId;
+                if (modalSkillIdInput) modalSkillIdInput.value = skillId;
+                if (modalTeacherName) modalTeacherName.textContent = teacherName;
+                if (modalSkillName) modalSkillName.textContent = skillName;
+            });
+        }
+    });
+</script>
+{% endblock %}
