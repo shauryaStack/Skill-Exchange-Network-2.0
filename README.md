@@ -37,8 +37,8 @@ To run this project locally, follow these steps:
 
 1. **Clone the Repo**:
    ```bash
-   git clone https://github.com/your-username/skill-exchange-network.git
-   cd updated_skill_exchange_network
+   git clone https://github.com/shauryapradhan546/Skill-Exchange-Network-2.0.git
+   cd Skill-Exchange-Network-2.0
    ```
 
 2. **Set Up Virtual Environment & Dependencies**:
@@ -53,7 +53,15 @@ To run this project locally, follow these steps:
    ```
 
 3. **Configure Environment Variables**: 
-   Create a `.env` file in the root directory and add your credentials (e.g., Twilio keys, Email SMTP settings, Firebase config, Django Secret Key).
+   Copy the example file to create your own `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Then open `.env` and fill in your credentials:
+
+   - **`SECRET_KEY`** — Generate a random Django secret key
+   - **Firebase Config** — Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com), add a web app, and copy the config values (`apiKey`, `authDomain`, `projectId`, etc.)
+   - **Twilio (Optional)** — Add Twilio credentials if you want WhatsApp notifications
 
 4. **Apply Database Migrations**:
    ```bash
