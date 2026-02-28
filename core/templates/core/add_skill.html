@@ -1,8 +1,10 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     add_skill.html — Add Teaching Skill Page
 
     Form for users to add a skill they can teach. Skills are grouped by
-    category using Django's {% regroup %} template tag. Skills the user
+    category using Django's regroup template tag. Skills the user
     already teaches are shown as disabled options.
 
     Template variables from views.py/add_skill():
@@ -12,9 +14,7 @@
     Form fields: skill_id (dropdown), proficiency (dropdown),
     available_time (text), notes (textarea)
     POSTs to views.py/add_skill() which creates a UserTeaches record.
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}Add Skill - Skill Exchange{% endblock %}
 

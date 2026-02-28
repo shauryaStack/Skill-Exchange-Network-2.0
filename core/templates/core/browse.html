@@ -1,4 +1,6 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     browse.html — Browse Skills Page
 
     Displays all available skills in a searchable, filterable grid.
@@ -19,9 +21,7 @@
       3. Active Filters — shows removable filter badges
       4. Skills Grid — responsive card grid with hover effects
       5. CTA — encourages users to add their own skills
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}Browse Skills - Skill Exchange{% endblock %}
 

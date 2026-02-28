@@ -1,14 +1,14 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     login.html — Login Page
 
     Simple email/password login form. POSTs to views.py/login_view()
     which authenticates against Django's User model.
 
-    The form uses {% csrf_token %} for security. On success, the user
+    The form uses csrf_token for security. On success, the user
     is redirected to /profile/. On failure, a flash message is shown.
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}Login - Skill Exchange{% endblock %}
 

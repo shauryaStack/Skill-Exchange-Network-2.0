@@ -1,4 +1,6 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     sessions.html — My Learning Sessions Page
 
     Manages all accepted exchange sessions. Split into two columns:
@@ -17,9 +19,7 @@
 
     This is the most JavaScript-heavy template in the project.
     All modals are created dynamically via JS template literals.
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}My Sessions - Skill Exchange{% endblock %}
 

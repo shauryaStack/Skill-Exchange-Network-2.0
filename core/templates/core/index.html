@@ -1,4 +1,6 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     index.html — Home Page
 
     This is the landing page users see first. It extends base.html and fills
@@ -12,9 +14,7 @@
     Template variables from views.py/index():
       - total_users, total_skills, total_exchanges (platform stats)
       - teaches_count, incoming_count (personal stats, if logged in)
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}Home - Premium Skill Exchange{% endblock %}
 

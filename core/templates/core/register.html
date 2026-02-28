@@ -1,4 +1,6 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     register.html — Registration Page
 
     Two ways to register:
@@ -9,9 +11,7 @@
 
     Fields: first_name*, last_name*, email*, division, phone, password*, password2*
     The register_view auto-seeds 35 skills in the database if none exist.
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}Register - Skill Exchange{% endblock %}
 

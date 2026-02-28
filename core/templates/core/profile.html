@@ -1,4 +1,6 @@
-<!--
+{% extends "core/base.html" %}
+{% load static %}
+{% comment %}
     profile.html — User Dashboard / Profile Page
 
     The main dashboard for logged-in users. Shows personal info and all
@@ -17,9 +19,7 @@
       Right column (col-lg-4):
         - My Sent Requests — list with status badges (pending/accepted/rejected)
         - Active Exchanges — accepted exchanges with "Schedule" button
--->
-{% extends "core/base.html" %}
-{% load static %}
+{% endcomment %}
 
 {% block title %}My Profile - Skill Exchange{% endblock %}
 
