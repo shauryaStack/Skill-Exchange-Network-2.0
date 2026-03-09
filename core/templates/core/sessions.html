@@ -614,39 +614,49 @@
 
     // ✅ SHARE / SEND NOTIFICATION MODAL
     function shareLink(sessionId, partnerName, partnerEmail, partnerPhone, skillName, meetingLink, scheduledDate, scheduledTime, platform) {
-        // Build the notification message
-        const dateInfo = scheduledDate ? `📅 Date: ${scheduledDate}` : '📅 Date: To be confirmed';
-        const timeInfo = scheduledTime ? `⏰ Time: ${scheduledTime}` : '⏰ Time: To be confirmed';
+        const dateStr = scheduledDate || 'To be confirmed';
+        const timeStr = scheduledTime || 'To be confirmed';
 
-        // Email subject and body
-        const emailSubject = `🔗 Skill Exchange Session: ${skillName}`;
+        // ------ EMAIL ------
+        const emailSubject = `Session Confirmed: ${skillName} | Skill Exchange Network`;
         const emailBody = [
             `Hi ${partnerName},`,
             ``,
-            `Here are the details for your skill exchange session:`,
+            `Your skill exchange session is confirmed. Here are the details:`,
             ``,
-            `📚 Skill: ${skillName}`,
-            dateInfo,
-            timeInfo,
-            `🖥️ Platform: ${platform}`,
-            `🔗 Meeting Link: ${meetingLink}`,
+            `Skill    : ${skillName}`,
+            `Date     : ${dateStr}`,
+            `Time     : ${timeStr}`,
+            `Platform : ${platform}`,
             ``,
-            `Click the meeting link above to join when it's time!`,
+            `Meeting Link:`,
+            `${meetingLink}`,
             ``,
-            `— Skill Exchange Network`
+            `Click the link above to join the session at the scheduled time.`,
+            `If you have any questions, please reply to this email.`,
+            ``,
+            `Best regards,`,
+            `Skill Exchange Network`,
         ].join('\n');
 
-        // WhatsApp message
+        // ------ WHATSAPP ------
         const whatsappMsg = [
-            `📅 *Skill Exchange Session*`,
+            `*Hello ${partnerName}!*`,
             ``,
-            `📚 Skill: ${skillName}`,
-            dateInfo,
-            timeInfo,
-            `🖥️ Platform: ${platform}`,
-            `🔗 Join: ${meetingLink}`,
+            `Your skill exchange session is confirmed.`,
             ``,
-            `See you there! 🎯`
+            `*Skill:* ${skillName}`,
+            `*Date:* ${dateStr}`,
+            `*Time:* ${timeStr}`,
+            `*Platform:* ${platform}`,
+            ``,
+            `*Meeting Link:*`,
+            `${meetingLink}`,
+            ``,
+            `Tap the link above to join at the scheduled time.`,
+            `See you there!`,
+            ``,
+            `- Skill Exchange Network`,
         ].join('\n');
 
         // Build mailto URL
@@ -662,15 +672,17 @@
         }
         const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappMsg)}` : '';
 
+        // Store URL in data-wa-url attribute — avoids inline-onclick URL escaping issues
         const whatsappButton = waUrl ? `
-        <button class="btn btn-lg w-100 notify-whatsapp-btn rounded-pill shadow-sm fw-bold mb-3" 
+        <button class="btn btn-lg w-100 notify-whatsapp-btn rounded-pill shadow-sm fw-bold mb-3"
                 style="background: linear-gradient(135deg, #25d366, #128c7e); color: white; border: none;"
-                onclick="openWhatsApp('${waUrl.replace(/'/g, "\\'")}', this)">
+                data-wa-url="${waUrl}"
+                onclick="openWhatsApp(this)">
             <i class="fab fa-whatsapp me-2"></i>Send via WhatsApp
         </button>
     ` : `
         <div class="p-3 mb-3 bg-light rounded-3 shadow-sm border-start border-4 border-warning">
-            <small class="text-muted fw-bold"><i class="fas fa-exclamation-triangle me-2 text-warning"></i> Partner has no phone number on profile — WhatsApp unavailable</small>
+            <small class="text-muted fw-bold"><i class="fas fa-exclamation-triangle me-2 text-warning"></i> Partner has no phone number on profile \u2014 WhatsApp unavailable</small>
         </div>
     `;
 
@@ -686,9 +698,9 @@
                     </div>
                     <div class="modal-body p-4">
                         <div class="p-4 mb-4 bg-light rounded-4 shadow-sm">
-                            <p class="mb-2 text-dark"><i class="fas fa-book me-2 text-primary"></i><strong>📚 ${skillName}</strong></p>
-                            <p class="mb-1 text-muted small fw-bold"><i class="fas fa-calendar me-2"></i>${dateInfo} | ${timeInfo}</p>
-                            <p class="mb-2 text-muted small fw-bold"><i class="fas fa-desktop me-2"></i>🖥️ ${platform}</p>
+                            <p class="mb-2 text-dark"><i class="fas fa-book me-2 text-primary"></i><strong>${skillName}</strong></p>
+                            <p class="mb-1 text-muted small fw-bold"><i class="fas fa-calendar me-2"></i>${dateStr} | ${timeStr}</p>
+                            <p class="mb-2 text-muted small fw-bold"><i class="fas fa-desktop me-2"></i>${platform}</p>
                             <code class="d-block p-2 bg-white rounded border mt-2 text-primary" style="word-break: break-all; font-size: 0.85rem;">${meetingLink}</code>
                         </div>
                         
@@ -737,7 +749,9 @@
         }
     }
 
-    function openWhatsApp(waUrl, buttonEl) {
+    function openWhatsApp(buttonEl) {
+        // Read URL from data attribute — ensures proper encoding without inline-onclick escaping
+        const waUrl = buttonEl.dataset.waUrl;
         window.open(waUrl, '_blank');
 
         // Show success feedback
@@ -748,7 +762,7 @@
         const resultDiv = document.getElementById('notifyResult');
         if (resultDiv) {
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<div class="alert bg-white shadow-sm border-start border-4 border-success text-success fw-bold"><i class="fas fa-check-circle me-2"></i>WhatsApp opened with pre-filled message. Just click Send!</div>';
+            resultDiv.innerHTML = '<div class="alert bg-white shadow-sm border-start border-4 border-success text-success fw-bold"><i class="fas fa-check-circle me-2"></i>WhatsApp opened with a pre-filled message. Just tap Send!</div>';
         }
     }
 

@@ -136,43 +136,58 @@ def send_schedule_notification(exchange, triggered_by_user):
     platform_display = exchange.get_meeting_platform_display() if exchange.meeting_platform else "Not set"
 
     # --- Build email content ---
-    subject = f"📅 Session Scheduled: {exchange.skill.name}"
+    scheduled_by = triggered_by_user.first_name or triggered_by_user.username
+    subject = f"Session Confirmed: {exchange.skill.name} | Skill Exchange Network"
     body_lines = [
         f"Hi {partner.first_name or partner.username},",
         "",
-        f"Your skill exchange session has been scheduled!",
+        "Great news! Your skill exchange session has been scheduled.",
         "",
-        f"📚 Skill: {exchange.skill.name}",
-        f"📅 Date: {date_str}",
-        f"⏰ Time: {time_str}",
-        f"🖥️ Platform: {platform_display}",
+        f"  Skill    : {exchange.skill.name}",
+        f"  Date     : {date_str}",
+        f"  Time     : {time_str}",
+        f"  Platform : {platform_display}",
     ]
 
     if exchange.meeting_link:
-        body_lines.append(f"🔗 Meeting Link: {exchange.meeting_link}")
+        body_lines += [
+            "",
+            "  Meeting Link:",
+            f"  {exchange.meeting_link}",
+            "",
+            "Click the link above to join the session at the scheduled time.",
+        ]
+    else:
+        body_lines.append("")  
+        body_lines.append("A meeting link will be shared with you before the session.")
 
     body_lines += [
         "",
-        f"Scheduled by: {triggered_by_user.first_name or triggered_by_user.username}",
+        f"Scheduled by: {scheduled_by}",
         "",
-        "Looking forward to the session!",
-        "— Skill Exchange Network",
+        "If you have any questions, please reply to this email.",
+        "",
+        "Best regards,",
+        "Skill Exchange Network",
     ]
 
     # Send email to partner
     send_email_to_user(partner.email, subject, "\n".join(body_lines))
 
-    # --- Build WhatsApp content (shorter, formatted for mobile) ---
+    # --- Build WhatsApp content ---
     whatsapp_msg = (
-        f"📅 *Session Scheduled!*\n\n"
-        f"📚 Skill: {exchange.skill.name}\n"
-        f"📅 Date: {date_str}\n"
-        f"⏰ Time: {time_str}\n"
-        f"🖥️ Platform: {platform_display}\n"
+        f"*Hello {partner.first_name or partner.username}!*\n\n"
+        f"Your skill exchange session has been scheduled.\n\n"
+        f"*Skill:* {exchange.skill.name}\n"
+        f"*Date:* {date_str}\n"
+        f"*Time:* {time_str}\n"
+        f"*Platform:* {platform_display}\n"
     )
     if exchange.meeting_link:
-        whatsapp_msg += f"🔗 Link: {exchange.meeting_link}\n"
-    whatsapp_msg += f"\nScheduled by {triggered_by_user.first_name or triggered_by_user.username}"
+        whatsapp_msg += f"\n*Meeting Link:*\n{exchange.meeting_link}\n"
+    else:
+        whatsapp_msg += "\nA meeting link will be shared before the session.\n"
+    whatsapp_msg += "\nSee you there!\n\n- Skill Exchange Network"
 
     # Send WhatsApp to partner (only if they have a phone number)
     send_whatsapp_to_user(partner.phone, whatsapp_msg)
@@ -194,30 +209,37 @@ def send_meeting_link_notification(exchange, triggered_by_user):
     time_str = exchange.scheduled_time.strftime("%I:%M %p") if exchange.scheduled_time else "To be confirmed"
 
     # --- Email ---
-    subject = f"🔗 Meeting Link Ready: {exchange.skill.name}"
+    created_by = triggered_by_user.first_name or triggered_by_user.username
+    subject = f"Meeting Link Ready: {exchange.skill.name} | Skill Exchange Network"
     body = (
         f"Hi {partner.first_name or partner.username},\n\n"
-        f"A meeting link has been created for your skill exchange session!\n\n"
-        f"📚 Skill: {exchange.skill.name}\n"
-        f"📅 Date: {date_str}\n"
-        f"⏰ Time: {time_str}\n"
-        f"🖥️ Platform: {platform_display}\n"
-        f"🔗 Meeting Link: {exchange.meeting_link}\n\n"
-        f"Click the link above to join when it's time!\n\n"
-        f"Created by: {triggered_by_user.first_name or triggered_by_user.username}\n\n"
-        f"— Skill Exchange Network"
+        f"Your meeting link for the skill exchange session is ready!\n\n"
+        f"  Skill    : {exchange.skill.name}\n"
+        f"  Date     : {date_str}\n"
+        f"  Time     : {time_str}\n"
+        f"  Platform : {platform_display}\n\n"
+        f"  Meeting Link:\n"
+        f"  {exchange.meeting_link}\n\n"
+        f"Click the link above to join the session at the scheduled time.\n\n"
+        f"Added by: {created_by}\n\n"
+        f"If you have any questions, please reply to this email.\n\n"
+        f"Best regards,\n"
+        f"Skill Exchange Network"
     )
     send_email_to_user(partner.email, subject, body)
 
     # --- WhatsApp ---
     whatsapp_msg = (
-        f"🔗 *Meeting Link Ready!*\n\n"
-        f"📚 Skill: {exchange.skill.name}\n"
-        f"🖥️ Platform: {platform_display}\n"
-        f"📅 Date: {date_str}\n"
-        f"⏰ Time: {time_str}\n"
-        f"🔗 Join: {exchange.meeting_link}\n\n"
-        f"Created by {triggered_by_user.first_name or triggered_by_user.username}"
+        f"*Hello {partner.first_name or partner.username}!*\n\n"
+        f"Your meeting link is ready!\n\n"
+        f"*Skill:* {exchange.skill.name}\n"
+        f"*Date:* {date_str}\n"
+        f"*Time:* {time_str}\n"
+        f"*Platform:* {platform_display}\n\n"
+        f"*Meeting Link:*\n"
+        f"{exchange.meeting_link}\n\n"
+        f"Tap the link above to join at the scheduled time.\n"
+        f"See you there!\n\n- Skill Exchange Network"
     )
     send_whatsapp_to_user(partner.phone, whatsapp_msg)
 
