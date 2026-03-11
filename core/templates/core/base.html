@@ -271,9 +271,416 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        /* ================================================================
+           SMOOTH THEME TRANSITION
+           Applied only when user explicitly toggles (class added via JS)
+           to avoid flash on page load.
+        ================================================================ */
+        html.theme-transitioning,
+        html.theme-transitioning *,
+        html.theme-transitioning *::before,
+        html.theme-transitioning *::after {
+            transition: background-color 0.35s ease,
+                        background 0.35s ease,
+                        border-color 0.35s ease,
+                        color 0.25s ease,
+                        box-shadow 0.35s ease !important;
+        }
+
+        /* ================================================================
+           DARK MODE — Overrides design tokens & specific elements
+        ================================================================ */
+        html.dark-mode,
+        html.dark-mode body {
+            --bg-body: #0d1117;
+            --bg-card: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        html.dark-mode body {
+            background-color: #0d1117 !important;
+            background-image: radial-gradient(circle at top right, rgba(74, 144, 226, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at bottom left, rgba(74, 144, 226, 0.06) 0%, transparent 40%);
+            color: #c9d1d9;
+        }
+
+        /* --- Navbar --- */
+        html.dark-mode .navbar {
+            background: rgba(13, 17, 23, 0.97) !important;
+            border-bottom: 1px solid #30363d !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+        }
+        html.dark-mode .navbar-brand,
+        html.dark-mode .user-name {
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .nav-link {
+            color: #8b949e !important;
+        }
+        html.dark-mode .nav-link:hover,
+        html.dark-mode .nav-link.active {
+            color: var(--primary-color) !important;
+            background: rgba(74, 144, 226, 0.1);
+        }
+        html.dark-mode .navbar-toggler-icon,
+        html.dark-mode .navbar-toggler .fas {
+            color: #c9d1d9 !important;
+        }
+
+        /* --- Dropdowns --- */
+        html.dark-mode .dropdown-menu {
+            background: #1c2128 !important;
+            border: 1px solid #30363d !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+        }
+        html.dark-mode .dropdown-item {
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .dropdown-item:hover {
+            background: rgba(74, 144, 226, 0.1) !important;
+            color: var(--primary-color) !important;
+        }
+        html.dark-mode hr.dropdown-divider {
+            border-color: #30363d !important;
+        }
+
+        /* --- Typography --- */
+        html.dark-mode h1, html.dark-mode h2, html.dark-mode h3,
+        html.dark-mode h4, html.dark-mode h5, html.dark-mode h6 {
+            color: #c9d1d9;
+        }
+        html.dark-mode .text-dark {
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .text-muted {
+            color: #8b949e !important;
+        }
+        html.dark-mode p, html.dark-mode span, html.dark-mode li,
+        html.dark-mode label, html.dark-mode small {
+            color: inherit;
+        }
+
+        /* --- Cards --- */
+        html.dark-mode .glass-card,
+        html.dark-mode .modern-card {
+            background: #161b22 !important;
+            border-color: #30363d !important;
+        }
+
+        /* --- PAGE HEADER BANNERS (inline style="background: white") --- */
+        html.dark-mode [style*="background: white"],
+        html.dark-mode [style*="background:white"] {
+            background: #161b22 !important;
+        }
+        /* Specifically target the page-header divs on sessions/profile/add_skill/match */
+        html.dark-mode .position-relative.overflow-hidden {
+            background: #161b22 !important;
+        }
+
+        /* --- "How It Works" & other full-width white sections --- */
+        html.dark-mode div[style*="background: white"],
+        html.dark-mode section[style*="background: white"] {
+            background: #161b22 !important;
+        }
+
+        /* --- Bootstrap colour utilities --- */
+        html.dark-mode .bg-white {
+            background: #161b22 !important;
+        }
+        html.dark-mode .bg-light {
+            background: #1c2128 !important;
+        }
+
+        /* --- Inner content boxes inside session / profile cards --- */
+        /* e.g. meeting link box, message quote box, scheduled-date box */
+        html.dark-mode .p-3.bg-white,
+        html.dark-mode .p-4.bg-white,
+        html.dark-mode .p-2.bg-white {
+            background: #0d1117 !important;
+        }
+        html.dark-mode .p-3.bg-light.rounded-3,
+        html.dark-mode .p-3.bg-light.rounded-4,
+        html.dark-mode .p-4.bg-light,
+        html.dark-mode .p-2.bg-light {
+            background: #1c2128 !important;
+        }
+
+        /* --- Session items on the sessions page --- */
+        html.dark-mode .session-item {
+            background: #1c2128 !important;
+            border-color: #30363d !important;
+        }
+        html.dark-mode .session-item .bg-white,
+        html.dark-mode .session-item [style*="background: white"] {
+            background: #0d1117 !important;
+        }
+
+        /* --- Teacher cards on match page --- */
+        html.dark-mode .teacher-card,
+        html.dark-mode .modern-card.bg-white {
+            background: #161b22 !important;
+        }
+
+        /* --- Hero illustration centre circle --- */
+        html.dark-mode .center-circle,
+        html.dark-mode [style*="background: white; box-shadow"] {
+            background: #161b22 !important;
+            border-color: #30363d !important;
+        }
+
+        /* --- Floating hero cards --- */
+        html.dark-mode .floating-card .fw-bold.text-dark {
+            color: #c9d1d9 !important;
+        }
+
+        /* --- Borders --- */
+        html.dark-mode .border,
+        html.dark-mode .border-top,
+        html.dark-mode .border-bottom,
+        html.dark-mode .border-end {
+            border-color: #30363d !important;
+        }
+        html.dark-mode .border-dashed {
+            border-color: #30363d !important;
+        }
+
+        /* --- Badges --- */
+        html.dark-mode .badge.bg-light {
+            background: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .badge.bg-warning.text-dark {
+            color: #0d1117 !important;
+        }
+
+        /* --- Forms --- */
+        html.dark-mode .form-control,
+        html.dark-mode .form-select {
+            background: #0d1117 !important;
+            border-color: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .form-control:focus,
+        html.dark-mode .form-select:focus {
+            background: #161b22 !important;
+            border-color: var(--primary-color) !important;
+            color: #c9d1d9 !important;
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15) !important;
+        }
+        html.dark-mode .form-control::placeholder {
+            color: #8b949e !important;
+        }
+        html.dark-mode .form-label {
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .input-group .form-control {
+            background: #0d1117 !important;
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .input-group .btn-outline-secondary {
+            border-color: #30363d !important;
+            color: #8b949e !important;
+        }
+
+        /* --- Footer --- */
+        html.dark-mode footer {
+            background: #161b22 !important;
+            border-color: #30363d !important;
+        }
+        html.dark-mode footer a {
+            color: #8b949e !important;
+        }
+        html.dark-mode footer a:hover {
+            color: var(--primary-color) !important;
+        }
+
+        /* --- Alerts / Flash messages --- */
+        html.dark-mode .alert {
+            background: #161b22 !important;
+            border-color: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .alert-success {
+            background: rgba(63, 185, 80, 0.15) !important;
+            border-color: rgba(63, 185, 80, 0.3) !important;
+            color: #3fb950 !important;
+        }
+        html.dark-mode .alert-danger,
+        html.dark-mode .alert-error {
+            background: rgba(248, 81, 73, 0.15) !important;
+            border-color: rgba(248, 81, 73, 0.3) !important;
+            color: #f85149 !important;
+        }
+        html.dark-mode .alert-warning {
+            background: rgba(210, 153, 34, 0.15) !important;
+            border-color: rgba(210, 153, 34, 0.3) !important;
+            color: #d29922 !important;
+        }
+        html.dark-mode .alert-info {
+            background: rgba(56, 189, 248, 0.12) !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
+            color: #38bdf8 !important;
+        }
+
+        /* --- Modals (JS-created on sessions page) --- */
+        html.dark-mode .modal-content {
+            background: #161b22 !important;
+            border-color: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .modal-header {
+            background: #1c2128 !important;
+            border-color: #30363d !important;
+        }
+        html.dark-mode .modal-footer {
+            background: #1c2128 !important;
+            border-color: #30363d !important;
+        }
+        html.dark-mode .modal-title {
+            color: #c9d1d9 !important;
+        }
+        html.dark-mode .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+        }
+
+        /* --- Tables (if any) --- */
+        html.dark-mode .table {
+            color: #c9d1d9 !important;
+            border-color: #30363d !important;
+        }
+        html.dark-mode .table td,
+        html.dark-mode .table th {
+            border-color: #30363d !important;
+        }
+        html.dark-mode .table-light th {
+            background: #1c2128 !important;
+            color: #c9d1d9 !important;
+        }
+
+        /* --- Scrollbar tinting in dark mode --- */
+        html.dark-mode ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        html.dark-mode ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        html.dark-mode ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        html.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #4a5568;
+        }
+
+        /* --- Misc --- */
+        html.dark-mode .bg-body {
+            background: #0d1117 !important;
+        }
+        html.dark-mode .blob-1 { background: #1a2f5e; }
+        html.dark-mode .blob-2 { background: #1a2535; }
+        html.dark-mode .blob-3 { background: #2d1f45; }
+        html.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        html.dark-mode .shadow-sm, html.dark-mode .shadow {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+        }
+        html.dark-mode .shadow-lg {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
+        }
+
+        /* ================================================================
+           DARK MODE TOGGLE BUTTON
+        ================================================================ */
+        .dm-toggle-btn {
+            background: none;
+            border: none;
+            padding: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .dm-toggle-btn:focus-visible {
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+        }
+
+        .dm-track {
+            position: relative;
+            width: 54px;
+            height: 28px;
+            background: linear-gradient(135deg, #f9c74f, #f8961e);
+            border-radius: 14px;
+            transition: background 0.45s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 0 0 rgba(249,199,79,0);
+            overflow: visible;
+        }
+
+        .dm-toggle-btn:hover .dm-track {
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 10px rgba(249, 199, 79, 0.55);
+        }
+
+        html.dark-mode .dm-track {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+        }
+
+        html.dark-mode .dm-toggle-btn:hover .dm-track {
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3), 0 0 10px rgba(114, 9, 183, 0.55);
+        }
+
+        .dm-thumb {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            transition: transform 0.45s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1;
+        }
+
+        html.dark-mode .dm-thumb {
+            transform: translateX(26px);
+        }
+
+        .dm-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.95);
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .dm-icon-sun  { left: 7px; opacity: 1; }
+        .dm-icon-moon { right: 6px; opacity: 0; }
+
+        html.dark-mode .dm-icon-sun  { opacity: 0; }
+        html.dark-mode .dm-icon-moon { opacity: 1; }
     </style>
 
     {% block extra_css %}{% endblock %}
+
+    <!-- Anti-flash: apply saved theme BEFORE first render to prevent white flicker -->
+    <script>
+        (function () {
+            if (localStorage.getItem('skillExchangeTheme') === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -325,6 +732,20 @@
                 <!-- Right side of navbar: notification bell + user dropdown (logged in)
                      OR login/register buttons (logged out) -->
                 <ul class="navbar-nav align-items-center">
+                    <!-- Dark / Light mode toggle -->
+                    <li class="nav-item me-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span id="dm-label" class="fw-semibold" style="font-size: 0.78rem; letter-spacing: 0.04em; color: var(--text-muted); white-space: nowrap; user-select: none;"></span>
+                            <button class="dm-toggle-btn" id="darkModeToggle"
+                                aria-label="Toggle dark mode" title="Switch theme">
+                                <div class="dm-track">
+                                    <span class="dm-icon dm-icon-sun"><i class="fas fa-sun"></i></span>
+                                    <span class="dm-icon dm-icon-moon"><i class="fas fa-moon"></i></span>
+                                    <div class="dm-thumb"></div>
+                                </div>
+                            </button>
+                        </div>
+                    </li>
                     {% if user.is_authenticated %}
                     <!-- Notification bell — badge count is updated via AJAX polling (see bottom of page) -->
                     <li class="nav-item notification-badge me-2">
@@ -437,9 +858,12 @@
          This initializes Firebase Auth in the browser and exposes
          window.firebaseAuth for Google Sign-In, email auth, etc.
          The auth functions are used on login.html and register.html. -->
-    <!-- Firebase config injected from server-side environment variables -->
+    <!-- Firebase config injected from server-side environment variables.
+         Stored in an application/json script tag so the JS linter doesn't
+         try to parse Django template syntax as JavaScript. -->
+    <script id="firebase-config-data" type="application/json">{{ firebase_config_json|safe }}</script>
     <script>
-        window.FIREBASE_CONFIG = {{ firebase_config_json|safe }};
+        window.FIREBASE_CONFIG = JSON.parse(document.getElementById('firebase-config-data').textContent);
     </script>
 
     <script type="module">
@@ -506,6 +930,39 @@
         setInterval(updateNotifications, 30000);
     </script>
     {% endif %}
+
+    <!-- Dark Mode Toggle Logic -->
+    <script>
+        (function () {
+            var toggle = document.getElementById('darkModeToggle');
+            var label  = document.getElementById('dm-label');
+            if (!toggle) return;
+
+            function updateLabel(isDark) {
+                label.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+
+            // Set label on page load to match current theme
+            updateLabel(document.documentElement.classList.contains('dark-mode'));
+
+            toggle.addEventListener('click', function () {
+                var html = document.documentElement;
+
+                // Enable smooth transitions only during user-initiated toggle
+                html.classList.add('theme-transitioning');
+
+                var isDark = html.classList.toggle('dark-mode');
+                localStorage.setItem('skillExchangeTheme', isDark ? 'dark' : 'light');
+                updateLabel(isDark);
+
+                // Remove transition class after animation completes so it
+                // doesn't slow down other interactions
+                setTimeout(function () {
+                    html.classList.remove('theme-transitioning');
+                }, 400);
+            });
+        })();
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

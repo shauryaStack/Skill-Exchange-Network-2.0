@@ -68,8 +68,7 @@
                             {% for category in category_list %}
                             <optgroup label="{{ category.grouper }}" class="fw-bold text-primary">
                                 {% for skill in category.list %}
-                                <option value="{{ skill.id }}" class="text-dark fw-normal" {% if skill.id in
-                                    teaching_skill_ids %}disabled{% endif %}>
+                                <option value="{{ skill.id }}" class="text-dark fw-normal" {% if skill.id in teaching_skill_ids %}disabled{% endif %}>
                                     {{ skill.name }}
                                     {% if skill.id in teaching_skill_ids %}(Already teaching){% endif %}
                                 </option>

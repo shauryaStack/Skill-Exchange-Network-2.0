@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Work Sheet – Skill Exchange Network</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 13px;
+      color: #000;
+      background: #fff;
+      padding: 30px 40px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .college-info {
+      text-align: center;
+      font-style: italic;
+      font-weight: bold;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+    .student-info {
+      margin-bottom: 14px;
+      line-height: 1.9;
+    }
+    .student-info b { font-weight: bold; }
+    .student-info ol { margin-left: 40px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 5px 7px;
+      vertical-align: top;
+      font-size: 12.5px;
+    }
+    thead th {
+      font-weight: bold;
+      text-align: left;
+      background: #fff;
+      font-size: 13px;
+    }
+    tbody td { color: #1a6b3c; }
+    td.date-cell {
+      color: #000;
+      font-weight: bold;
+      white-space: nowrap;
+      vertical-align: top;
+    }
+    td.hours-cell {
+      text-align: center;
+      color: #1a6b3c;
+    }
+    td.sign-cell { min-width: 75px; }
+    tr.total-row td {
+      font-weight: bold;
+      color: #000;
+      background: #f5f5f5;
+    }
+    @media print { body { padding: 15px 20px; } }
+  </style>
+</head>
+<body>
+
+  <div class="header-top">
+    <span>S.Y.B.Sc. Information Technology</span>
+    <span>Semester IV</span>
+  </div>
+
+  <div class="college-info">
+    Chikitsak Samuha's<br>
+    Sir Sitaram and Lady Shantabai Patkar College of Arts &amp; Science &amp;<br>
+    V.P.Varde College of Commerce &amp; Economics<br>
+    An Autonomous College, University of Mumbai
+  </div>
+
+  <div class="title">Work Sheet</div>
+
+  <div class="student-info">
+    <p><b>Student Name:</b> Shaurya Pradhan</p>
+    <p><b>Group Members:</b></p>
+    <ol>
+      <li>Shaurya Pradhan</li>
+    </ol>
+    <p><b>Project Title:</b> Skill Exchange Network 2.0 – Peer-to-Peer Learning Platform</p>
+    <p><b>Guide Name:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:100px;">Date</th>
+        <th style="width:120px;">Activity Type</th>
+        <th>Module / Task Description</th>
+        <th style="width:65px;">Total Hours</th>
+        <th style="width:195px;">Remarks / Outcome</th>
+        <th style="width:80px;">Sign of Teacher In-charge</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ══ 5 Dec 2025 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">5<sup>th</sup><br>Dec 2025</td>
+        <td>Project Discussion</td>
+        <td>Finalized project idea – Skill Exchange Network 2.0; defined scope, goals, and tech stack (Django, Firebase, Twilio, SQLite)</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Scope document ready; Django MTV architecture selected</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Research</td>
+        <td>Studied similar peer-learning platforms; identified 4 core modules: Auth, Skill Browse, Exchange Request, Notifications</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Requirements listed; module breakdown documented</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 9 Dec 2025 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">9<sup>th</sup><br>Dec 2025</td>
+        <td>Planning</td>
+        <td>Created project folder structure; initialised Django project with <code>django-admin startproject</code> and configured <code>settings.py</code></td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Project skeleton ready; <code>core</code> app created and registered</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Set up virtual environment, installed packages from <code>requirements.txt</code> (Django, Twilio, firebase-admin, python-decouple)</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>All dependencies installed; <code>.env</code> and <code>.env.example</code> files created</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 13 Dec 2025 | 4 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">13<sup>th</sup><br>Dec 2025</td>
+        <td>Database Design</td>
+        <td>Designed all database models in <code>core/models.py</code>: custom <em>User</em> (extends AbstractUser), <em>Skill</em>, <em>UserTeaches</em>, and <em>ExchangeRequest</em></td>
+        <td class="hours-cell">2 hr</td>
+        <td>ERD finalised; custom User model with <code>phone</code>, <code>division</code>, <code>firebase_uid</code> fields</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Ran <code>makemigrations</code> and <code>migrate</code>; registered all models in <code>core/admin.py</code> and verified Django Admin panel</td>
+        <td class="hours-cell">2 hr</td>
+        <td>All tables created in SQLite; admin panel displays User, Skill, ExchangeRequest</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 17 Dec 2025 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">17<sup>th</sup><br>Dec 2025</td>
+        <td>Coding</td>
+        <td>Implemented <code>register_view</code> and <code>login_view</code> in <code>views.py</code> using Django authentication; added URL patterns in <code>urls.py</code></td>
+        <td class="hours-cell">2 hr</td>
+        <td>User registration and login functional; sessions maintained correctly</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Designed <code>login.html</code> and <code>register.html</code> templates with Minimalist Light Mode CSS and input validation</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Responsive login and register pages rendering correctly on desktop</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 20 Dec 2025 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">20<sup>th</sup><br>Dec 2025</td>
+        <td>Testing</td>
+        <td>Tested registration, login, and logout flows; checked duplicate-email and wrong-password edge cases</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>All auth edge cases handled; appropriate error messages displayed</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Research</td>
+        <td>Studied Firebase Admin SDK documentation for Django; created Firebase project and obtained API keys for <code>.env</code></td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Firebase project ready; config values (apiKey, authDomain, projectId) stored in <code>.env</code></td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 24 Dec 2025 | 4 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">24<sup>th</sup><br>Dec 2025</td>
+        <td>Coding</td>
+        <td>Implemented <code>firebase_login</code> view in <code>views.py</code>; verified Firebase ID token server-side using <code>firebase-admin</code> SDK</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Token verification working; <code>firebase_uid</code> saved to User model on first Google login</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Added Google Sign-In button on <code>login.html</code>; wrote Firebase JS SDK script to obtain ID token and POST to <code>firebase_login</code> endpoint</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Google OAuth login fully working in browser; redirects to profile on success</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 27 Dec 2025 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">27<sup>th</sup><br>Dec 2025</td>
+        <td>Coding</td>
+        <td>Built <code>index</code> view and <code>index.html</code> homepage; integrated platform-wide counters for total users, skills, and sessions</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Homepage live with dynamic statistics pulled from DB using Django ORM</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>Verified Google login, normal login, and logout on same browser; checked session isolation between users</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Session management confirmed correct; no cross-user session leaks</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 31 Dec 2025 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">31<sup>st</sup><br>Dec 2025</td>
+        <td>Frontend</td>
+        <td>Designed <code>base.html</code> skeleton with navigation bar and footer; all other templates extended from base using Django template inheritance</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Nav bar and footer consistent across all pages; active link highlighting added</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Developed <code>browse_view</code> and <code>browse.html</code>; built categorised skill card grid (Programming, Design, Language, Music, etc.)</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Browse page displays all skill categories; each card is clickable</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 3 Jan 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">3<sup>rd</sup><br>Jan 2026</td>
+        <td>Coding</td>
+        <td>Built <code>match_view</code> – queries all <em>UserTeaches</em> records for a selected skill and returns a list of matching teachers with their details</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Skill-to-teacher matching working correctly via Django ORM filter</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>Tested skill browsing → matching flow with 3 test user accounts; verified correct teachers appear per skill</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Browse and match pages returning correct results; empty-state message shown when no teacher found</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 7 Jan 2026 | 4 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">7<sup>th</sup><br>Jan 2026</td>
+        <td>Coding</td>
+        <td>Implemented <code>request_exchange</code> view; creates an <em>ExchangeRequest</em> record (status=Pending) when a learner clicks Request on the match page</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Exchange request saved to DB; confirmation message shown to requester</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Updated <code>profile.html</code> dashboard to show incoming exchange requests dynamically; added Accept and Reject action buttons</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Profile dashboard displays pending requests in organised section</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 10 Jan 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">10<sup>th</sup><br>Jan 2026</td>
+        <td>Coding</td>
+        <td>Built <code>accept_exchange</code> and <code>reject_exchange</code> views; updates ExchangeRequest status in DB and marks session as active on accept</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Accept and Reject flows working; status updates reflected on both users' dashboards</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>End-to-end test of full exchange lifecycle: Browse → Match → Request → Accept / Reject with two different test accounts</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Full lifecycle verified; no database integrity errors or duplicate records</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 14 Jan 2026 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">14<sup>th</sup><br>Jan 2026</td>
+        <td>Research</td>
+        <td>Set up Gmail SMTP using App Password; configured <code>EMAIL_BACKEND</code>, <code>EMAIL_HOST</code>, and <code>EMAIL_USE_TLS</code> in <code>settings.py</code> via <code>.env</code></td>
+        <td class="hours-cell">2 hr</td>
+        <td>SMTP config live; test email delivered to inbox successfully using <code>send_mail()</code></td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Implemented <code>send_session_email</code> in <code>core/utils.py</code>; function called on session accept and reschedule events</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Automated emails sent with session details on accept trigger</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 18 Jan 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">18<sup>th</sup><br>Jan 2026</td>
+        <td>Coding</td>
+        <td>Integrated email notification calls inside <code>accept_exchange</code> view; both requester and teacher receive email on session confirmation</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Both users receive email with session info; email content verified for accuracy</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>Tested email delivery on various Gmail and Outlook addresses; checked email formatting and missing-variable edge cases</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Emails delivered correctly; KeyError for missing context variable fixed</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 22 Jan 2026 | 4 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">22<sup>nd</sup><br>Jan 2026</td>
+        <td>Research</td>
+        <td>Studied Twilio WhatsApp Sandbox API; obtained Account SID, Auth Token, and sandbox number from Twilio console; joined sandbox on test device</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Twilio credentials stored in <code>.env</code>; sandbox WhatsApp number configured</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Wrote <code>send_whatsapp_to_user</code> and <code>send_schedule_notification</code> functions in <code>utils.py</code> using Twilio REST client library</td>
+        <td class="hours-cell">2 hr</td>
+        <td>WhatsApp message received on test device when session is accepted</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 26 Jan 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">26<sup>th</sup><br>Jan 2026</td>
+        <td>Testing</td>
+        <td>Tested WhatsApp notifications on accept and reject events; verified message content, phone number formatting, and delivery status</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Notifications delivered correctly; invalid phone number error handled gracefully</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Coding</td>
+        <td>Built <code>reschedule_session</code> view; allows date and time update of accepted session and auto-triggers <code>send_schedule_notification</code></td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Session rescheduling working; both email and WhatsApp sent with updated date/time</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 30 Jan 2026 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">30<sup>th</sup><br>Jan 2026</td>
+        <td>Coding</td>
+        <td>Developed <code>add_skill</code> and <code>remove_skill</code> views; users can manage their taught skills directly from their profile dashboard</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Skill addition and removal reflected instantly; page update without full reload</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Enhanced <code>profile.html</code> with active sessions panel, skill tags with proficiency level, and notification count badge in nav</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Profile shows all sections (skills, requests, sessions) in organised layout</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 3 Feb 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">3<sup>rd</sup><br>Feb 2026</td>
+        <td>Coding</td>
+        <td>Built <code>core/api_views.py</code> with a REST endpoint to return unread notification count for logged-in user as JSON response</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>API returns correct JSON count; endpoint registered in <code>urls.py</code> under <code>api/</code> prefix</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Added JavaScript <code>fetch()</code> call in <code>base.html</code> to poll notification API every 30 seconds and update navbar badge automatically</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Live notification badge updates in nav without page refresh</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 8 Feb 2026 | 3.5 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">8<sup>th</sup><br>Feb 2026</td>
+        <td>Coding</td>
+        <td>Implemented <code>send_meeting_link_notification</code> in <code>utils.py</code>; sends Google Meet / MS Teams link to both users via email and WhatsApp on session confirmation</td>
+        <td class="hours-cell">2 hr</td>
+        <td>Meeting link delivered to both requester and teacher; message includes date and platform name</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>Full integration test of entire system: new user → browse → request → accept → reschedule → meeting link notification</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Complete flow verified; all notifications (email + WhatsApp) delivered at correct trigger points</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 13 Feb 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">13<sup>th</sup><br>Feb 2026</td>
+        <td>Frontend</td>
+        <td>Applied responsive CSS improvements across all templates; fixed mobile layout for <code>browse.html</code>, <code>profile.html</code>, and <code>index.html</code></td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Site renders correctly on mobile, tablet, and desktop viewports</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Documentation</td>
+        <td>Updated <code>README.md</code> with full installation steps, tech stack, environment variable guide, and user journey table</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>README complete; any new developer can set up the project by following the documented steps</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ 20 Feb 2026 | 3 hr ══ -->
+      <tr>
+        <td class="date-cell" rowspan="2">20<sup>th</sup><br>Feb 2026</td>
+        <td>Testing</td>
+        <td>Security audit: verified CSRF protection on all forms, <code>@login_required</code> decorators on all views, and ORM protection against SQL injection</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>All views secured; no vulnerabilities found; CSRF tokens verified on every POST form</td>
+        <td class="sign-cell"></td>
+      </tr>
+      <tr>
+        <td>Project Submission</td>
+        <td>Final code review; pushed complete project to GitHub repository; prepared submission folder with <code>README.md</code>, <code>detail.md</code>, and all required docs</td>
+        <td class="hours-cell">1.5 hr</td>
+        <td>Project submitted; GitHub repo public with full documentation and clean commit history</td>
+        <td class="sign-cell"></td>
+      </tr>
+
+      <!-- ══ Total ══ -->
+      <tr class="total-row">
+        <td colspan="3" style="text-align:right; padding-right:12px;"><b>Grand Total</b></td>
+        <td class="hours-cell"><b>67 hr</b></td>
+        <td colspan="2"></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+</body>
+</html>
