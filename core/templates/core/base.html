@@ -28,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Skill Exchange Network{% endblock %}</title>
 
-    <!-- ✅ BOOTSTRAP, FONTS & FONT AWESOME -->
+    <!--  BOOTSTRAP, FONTS & FONT AWESOME -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,11 +36,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <!-- Inline styles define the light-mode design system.
-         These CSS variables override style.css for the minimalist look.
-         Changing these variables will update colors across all pages. -->
     <style>
-        /* Design tokens — change these to update the entire color scheme */
+        /* Design tokens */
         :root {
             --primary-color: #4a90e2;
             /* Soft beautiful blue */
@@ -70,7 +67,7 @@
             color: var(--text-main);
         }
 
-        /* Typography Highlights */
+        /* Typography */
         h1,
         h2,
         h3,
@@ -174,7 +171,7 @@
             border-color: var(--primary-hover);
         }
 
-        /* Badges & Notifications */
+        /* Badges */
         .notification-badge {
             position: relative;
         }
@@ -238,7 +235,7 @@
             color: var(--text-muted) !important;
         }
 
-        /* Abstract Background blobs */
+        /* Background blobs */
         .bg-blob {
             position: fixed;
             border-radius: 50%;
@@ -272,11 +269,7 @@
             transform: translate(-50%, -50%);
         }
 
-        /* ================================================================
-           SMOOTH THEME TRANSITION
-           Applied only when user explicitly toggles (class added via JS)
-           to avoid flash on page load.
-        ================================================================ */
+        /* Theme transition */
         html.theme-transitioning,
         html.theme-transitioning *,
         html.theme-transitioning *::before,
@@ -288,9 +281,7 @@
                         box-shadow 0.35s ease !important;
         }
 
-        /* ================================================================
-           DARK MODE — Overrides design tokens & specific elements
-        ================================================================ */
+        /* Dark mode */
         html.dark-mode,
         html.dark-mode body {
             --bg-body: #0d1117;
@@ -310,7 +301,7 @@
             color: #c9d1d9;
         }
 
-        /* --- Navbar --- */
+        /* Navbar dark */
         html.dark-mode .navbar {
             background: rgba(13, 17, 23, 0.97) !important;
             border-bottom: 1px solid #30363d !important;
@@ -333,7 +324,7 @@
             color: #c9d1d9 !important;
         }
 
-        /* --- Dropdowns --- */
+        /* Dropdowns dark */
         html.dark-mode .dropdown-menu {
             background: #1c2128 !important;
             border: 1px solid #30363d !important;
@@ -350,7 +341,7 @@
             border-color: #30363d !important;
         }
 
-        /* --- Typography --- */
+        /* Typography dark */
         html.dark-mode h1, html.dark-mode h2, html.dark-mode h3,
         html.dark-mode h4, html.dark-mode h5, html.dark-mode h6 {
             color: #c9d1d9;
@@ -366,14 +357,14 @@
             color: inherit;
         }
 
-        /* --- Cards --- */
+        /* Cards dark */
         html.dark-mode .glass-card,
         html.dark-mode .modern-card {
             background: #161b22 !important;
             border-color: #30363d !important;
         }
 
-        /* --- PAGE HEADER BANNERS (inline style="background: white") --- */
+        /* Page headers dark */
         html.dark-mode [style*="background: white"],
         html.dark-mode [style*="background:white"] {
             background: #161b22 !important;
@@ -383,13 +374,13 @@
             background: #161b22 !important;
         }
 
-        /* --- "How It Works" & other full-width white sections --- */
+        /* White sections dark */
         html.dark-mode div[style*="background: white"],
         html.dark-mode section[style*="background: white"] {
             background: #161b22 !important;
         }
 
-        /* --- Bootstrap colour utilities --- */
+        /* Bootstrap colors dark */
         html.dark-mode .bg-white {
             background: #161b22 !important;
         }
@@ -397,8 +388,7 @@
             background: #1c2128 !important;
         }
 
-        /* --- Inner content boxes inside session / profile cards --- */
-        /* e.g. meeting link box, message quote box, scheduled-date box */
+        /* Inner boxes dark */
         html.dark-mode .p-3.bg-white,
         html.dark-mode .p-4.bg-white,
         html.dark-mode .p-2.bg-white {
@@ -411,7 +401,7 @@
             background: #1c2128 !important;
         }
 
-        /* --- Session items on the sessions page --- */
+        /* Session items dark */
         html.dark-mode .session-item {
             background: #1c2128 !important;
             border-color: #30363d !important;
@@ -421,25 +411,25 @@
             background: #0d1117 !important;
         }
 
-        /* --- Teacher cards on match page --- */
+        /* Teacher cards dark */
         html.dark-mode .teacher-card,
         html.dark-mode .modern-card.bg-white {
             background: #161b22 !important;
         }
 
-        /* --- Hero illustration centre circle --- */
+        /* Hero circle dark */
         html.dark-mode .center-circle,
         html.dark-mode [style*="background: white; box-shadow"] {
             background: #161b22 !important;
             border-color: #30363d !important;
         }
 
-        /* --- Floating hero cards --- */
+        /* Floating cards dark */
         html.dark-mode .floating-card .fw-bold.text-dark {
             color: #c9d1d9 !important;
         }
 
-        /* --- Borders --- */
+        /* Borders dark */
         html.dark-mode .border,
         html.dark-mode .border-top,
         html.dark-mode .border-bottom,
@@ -450,7 +440,7 @@
             border-color: #30363d !important;
         }
 
-        /* --- Badges --- */
+        /* Badges dark */
         html.dark-mode .badge.bg-light {
             background: #30363d !important;
             color: #c9d1d9 !important;
@@ -459,7 +449,7 @@
             color: #0d1117 !important;
         }
 
-        /* --- Forms --- */
+        /* Forms dark */
         html.dark-mode .form-control,
         html.dark-mode .form-select {
             background: #0d1117 !important;
@@ -488,7 +478,7 @@
             color: #8b949e !important;
         }
 
-        /* --- Footer --- */
+        /* Footer dark */
         html.dark-mode footer {
             background: #161b22 !important;
             border-color: #30363d !important;
@@ -500,7 +490,7 @@
             color: var(--primary-color) !important;
         }
 
-        /* --- Alerts / Flash messages --- */
+        /* Alerts dark */
         html.dark-mode .alert {
             background: #161b22 !important;
             border-color: #30363d !important;
@@ -528,7 +518,7 @@
             color: #38bdf8 !important;
         }
 
-        /* --- Modals (JS-created on sessions page) --- */
+        /* Modals dark */
         html.dark-mode .modal-content {
             background: #161b22 !important;
             border-color: #30363d !important;
@@ -549,7 +539,7 @@
             background-color: rgba(0, 0, 0, 0.7) !important;
         }
 
-        /* --- Tables (if any) --- */
+        /* Tables dark */
         html.dark-mode .table {
             color: #c9d1d9 !important;
             border-color: #30363d !important;
@@ -563,7 +553,7 @@
             color: #c9d1d9 !important;
         }
 
-        /* --- Scrollbar tinting in dark mode --- */
+        /* Scrollbar dark */
         html.dark-mode ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -579,7 +569,7 @@
             background: #4a5568;
         }
 
-        /* --- Misc --- */
+        /* Misc dark */
         html.dark-mode .bg-body {
             background: #0d1117 !important;
         }
@@ -596,9 +586,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
         }
 
-        /* ================================================================
-           DARK MODE TOGGLE BUTTON
-        ================================================================ */
+        /* Dark mode toggle */
         .dm-toggle-btn {
             background: none;
             border: none;
@@ -684,15 +672,12 @@
 </head>
 
 <body>
-    <!-- Decorative background blobs — large blurred circles that create
-         a subtle gradient effect behind the page content (purely visual) -->
+    <!-- Background blobs -->
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
     <div class="bg-blob blob-3"></div>
 
-    <!-- NAVBAR — Fixed at the top of every page.
-         Shows different links depending on whether user is logged in.
-         `if user.is_authenticated` is how Django checks login state in templates. -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand fs-4" href="{% url 'index' %}">
@@ -729,8 +714,7 @@
                     {% endif %}
                 </ul>
 
-                <!-- Right side of navbar: notification bell + user dropdown (logged in)
-                     OR login/register buttons (logged out) -->
+                <!-- Right side: notifications + user dropdown -->
                 <ul class="navbar-nav align-items-center">
                     <!-- Dark / Light mode toggle -->
                     <li class="nav-item me-2">
@@ -747,7 +731,7 @@
                         </div>
                     </li>
                     {% if user.is_authenticated %}
-                    <!-- Notification bell — badge count is updated via AJAX polling (see bottom of page) -->
+                    <!-- Notification bell -->
                     <li class="nav-item notification-badge me-2">
                         <a class="nav-link" href="{% url 'profile' %}">
                             <i class="fas fa-bell fs-5"></i>
@@ -851,64 +835,19 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS — required for dropdowns, modals, tooltips, collapse -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Firebase SDK (modular v10) — loaded from Google CDN.
-         This initializes Firebase Auth in the browser and exposes
-         window.firebaseAuth for Google Sign-In, email auth, etc.
-         The auth functions are used on login.html and register.html. -->
-    <!-- Firebase config injected from server-side environment variables.
-         Stored in an application/json script tag so the JS linter doesn't
-         try to parse Django template syntax as JavaScript. -->
+    <!-- Firebase config from server -->
     <script id="firebase-config-data" type="application/json">{{ firebase_config_json|safe }}</script>
     <script>
         window.FIREBASE_CONFIG = JSON.parse(document.getElementById('firebase-config-data').textContent);
     </script>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    <!-- Firebase module -->
+    <script type="module" src="{% static 'js/firebase.js' %}"></script>
 
-        // ✅ Firebase config loaded from environment variables (via Django context processor)
-        const firebaseConfig = window.FIREBASE_CONFIG;
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        window.firebaseAuth = {
-            googleSignIn: async () => {
-                try {
-                    const result = await signInWithPopup(auth, googleProvider);
-                    return { success: true, user: result.user };
-                } catch (error) {
-                    return { success: false, error: error.message };
-                }
-            },
-            emailSignIn: async (email, password) => {
-                try {
-                    const result = await signInWithEmailAndPassword(auth, email, password);
-                    return { success: true, user: result.user };
-                } catch (error) {
-                    return { success: false, error: error.message };
-                }
-            },
-            emailSignUp: async (email, password) => {
-                try {
-                    const result = await createUserWithEmailAndPassword(auth, email, password);
-                    return { success: true, user: result.user };
-                } catch (error) {
-                    return { success: false, error: error.message };
-                }
-            }
-        };
-    </script>
-
-    <!-- NOTIFICATION POLLING — Only loaded for authenticated users.
-         Fetches pending request count from the API every 30 seconds
-         and updates the bell icon badge in the navbar.
-         This gives users real-time-ish notification updates without WebSockets. -->
+    <!-- Notification polling -->
     {% if user.is_authenticated %}
     <script>
         function updateNotifications() {
@@ -931,7 +870,7 @@
     </script>
     {% endif %}
 
-    <!-- Dark Mode Toggle Logic -->
+    <!-- Dark mode toggle -->
     <script>
         (function () {
             var toggle = document.getElementById('darkModeToggle');

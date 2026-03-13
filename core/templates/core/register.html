@@ -122,6 +122,8 @@
                         </button>
                     </form>
 
+
+
                     <!-- Login Link -->
                     <div class="text-center mt-3 pt-4 border-top">
                         <p class="text-muted mb-3 fw-medium">Already have an account?</p>
@@ -140,25 +142,6 @@
 <script>
     AOS.init({ duration: 600, once: true });
 
-    // Google Sign-Up Handler
-    document.getElementById('google-signup-btn')?.addEventListener('click', async function () {
-        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing up...';
-        this.disabled = true;
 
-        if (typeof window.firebaseAuth !== 'undefined') {
-            const result = await window.firebaseAuth.googleSignIn();
-            if (result.success) {
-                window.location.href = '/profile/';
-            } else {
-                alert('Sign-up failed: ' + result.error);
-                this.innerHTML = '<i class="fab fa-google me-2"></i>Sign up with Google';
-                this.disabled = false;
-            }
-        } else {
-            alert('Firebase not initialized');
-            this.innerHTML = '<i class="fab fa-google me-2"></i>Sign up with Google';
-            this.disabled = false;
-        }
-    });
 </script>
 {% endblock %}

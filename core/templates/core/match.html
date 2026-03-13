@@ -1,26 +1,11 @@
 {% extends "core/base.html" %}
 {% load static %}
-{% comment %}
-    match.html — Find Teachers Page
 
-    Shows all users who teach a specific skill. Users can send an
-    exchange request via a Bootstrap modal with offering skill, time, and message.
-
-    Template variables from views.py/match_view():
-      - skill: The Skill object being searched for (or None)
-      - teachers: QuerySet of UserTeaches objects for that skill
-
-    Key interactions:
-      - "Request Exchange" button opens a modal (single modal reused via JS data-* attributes)
-      - Modal form POSTs to /request-exchange/ with teacher_id, skill_id, offering_skill, etc.
-      - If user is not authenticated → shows "Login to Request" link instead
-      - If user IS the teacher → shows disabled "This is you" button
-{% endcomment %}
 
 {% block title %}Find Teachers - Skill Exchange{% endblock %}
 
 {% block content %}
-<!-- ✅ HEADER -->
+
 <div class="position-relative overflow-hidden pt-5 pb-5 mb-4"
     style="background: white; border-bottom: 1px solid var(--border-color);">
     <div class="position-absolute top-0 start-0 w-100 h-100"
@@ -54,19 +39,19 @@
         {% for teacher_obj in teachers %}
         <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
             <div class="modern-card bg-white border-0 shadow-sm h-100 teacher-card p-4" style="border-radius: 20px;">
-                <!-- Teacher Avatar -->
+
                 <div class="text-center mb-4">
                     <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm mx-auto mb-3"
                         style="width: 100px; height: 100px; font-size: 2.8rem;">
                         <i class="fas fa-user-graduate"></i>
                     </div>
 
-                    <!-- Teacher Name -->
+
                     <h4 class="text-dark mb-2 fw-bold">
                         {{ teacher_obj.user.first_name }} {{ teacher_obj.user.last_name }}
                     </h4>
 
-                    <!-- Division Badge -->
+
                     {% if teacher_obj.user.division %}
                     <span class="badge border border-warning text-warning px-3 py-2 mt-1 rounded-pill fw-bold"
                         style="background: rgba(255, 193, 7, 0.1);">
@@ -75,9 +60,9 @@
                     {% endif %}
                 </div>
 
-                <!-- Teacher Details -->
+
                 <div class="mb-4">
-                    <!-- Proficiency -->
+
                     <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
                         <span class="text-muted fw-bold">
                             <i class="fas fa-star me-2 text-warning"></i>Proficiency
@@ -87,7 +72,7 @@
                         </span>
                     </div>
 
-                    <!-- Availability -->
+
                     <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
                         <span class="text-muted fw-bold">
                             <i class="fas fa-clock me-2 text-info"></i>Available
@@ -97,7 +82,7 @@
                         </span>
                     </div>
 
-                    <!-- Notes -->
+
                     {% if teacher_obj.notes %}
                     <div class="p-3 mt-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
                         <p class="text-muted mb-0 small fst-italic">
@@ -107,7 +92,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Action Button -->
+
                 {% if user.is_authenticated and user != teacher_obj.user %}
                 <button type="button" class="btn btn-primary w-100 rounded-pill shadow-sm fw-bold px-4 py-2"
                     data-bs-toggle="modal" data-bs-target="#requestModal" data-teacher-id="{{ teacher_obj.user.id }}"
@@ -148,7 +133,7 @@
                         <input type="hidden" name="teacher_id" id="modal_teacher_id">
                         <input type="hidden" name="skill_id" id="modal_skill_id">
 
-                        <!-- Teacher Info -->
+
                         <div class="text-center mb-4">
                             <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm mx-auto mb-3"
                                 style="width: 70px; height: 70px; font-size: 2rem;">
@@ -158,7 +143,7 @@
                             <small class="text-primary fw-bold" id="modal_skill_name"></small>
                         </div>
 
-                        <!-- Form Fields -->
+
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold">
                                 <i class="fas fa-gift me-2 text-success"></i>What skill will you offer in exchange? *
@@ -264,16 +249,13 @@
         var requestModal = document.getElementById('requestModal');
         if (requestModal) {
             requestModal.addEventListener('show.bs.modal', function (event) {
-                // Button that triggered the modal
                 var button = event.relatedTarget;
-
-                // Extract info from data-* attributes
                 var teacherId = button.getAttribute('data-teacher-id');
                 var teacherName = button.getAttribute('data-teacher-name');
                 var skillId = button.getAttribute('data-skill-id');
                 var skillName = button.getAttribute('data-skill-name');
 
-                // Update the modal's content.
+
                 var modalTeacherIdInput = requestModal.querySelector('#modal_teacher_id');
                 var modalSkillIdInput = requestModal.querySelector('#modal_skill_id');
                 var modalTeacherName = requestModal.querySelector('#modal_teacher_name');
